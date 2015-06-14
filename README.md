@@ -2,7 +2,7 @@ Less 2.5.0 Compiler for Komdo Edit/Ide
 =========================
 
 a LESS 2.5.0 compiler for Komodo Edit/Ide.  
-Based on the old  [LESS](https://community.activestate.com/node/7416) compiler (with version 1.2.1), its updated to work with the (latest) LESS 2.5.0 version.  
+Based on the old  [LESS](https://community.activestate.com/node/7416) compiler (with version 1.2.1), its updated to work with the (latest) LESS 2.5.0 version.
 A bug with the @import is now fixed (is handled by the extension it self), and a file watcher ability was added.
 
 <h2>Use</h2>
@@ -20,24 +20,24 @@ A bug with the @import is now fixed (is handled by the extension it self), and a
 
 <h2>Macro</h2>
 <p>You can create a macro that will automatically turn a .less file into CSS when you save. Use the following code and have it trigger After file save:</p>
-<div class="geshifilter">
+<pre><code>
 <div class="javascript geshifilter-javascript" style="font-family:monospace;"><span style="color: #000066; font-weight: bold;">if</span> <span style="color: #009900;">(</span>extensions.<span style="color: #660066;">less</span><span style="color: #009900;">)</span> <span style="color: #009900;">{</span><br>
 &nbsp; &nbsp; extensions.<span style="color: #660066;">less</span>.<span style="color: #660066;">compileFile</span><span style="color: #009900;">(</span><span style="color: #009900;">)</span><span style="color: #339933;">;</span><br>
 <span style="color: #009900;">}</span></div>
-</div>
+</code></pre>
 <p>The following macro will compile and compress the css.</p>
-<div class="geshifilter">
+<pre><code>
 <div class="javascript geshifilter-javascript" style="font-family:monospace;"><span style="color: #000066; font-weight: bold;">if</span> <span style="color: #009900;">(</span>extensions.<span style="color: #660066;">less</span><span style="color: #009900;">)</span> <span style="color: #009900;">{</span><br>
 &nbsp; &nbsp; extensions.<span style="color: #660066;">less</span>.<span style="color: #660066;">compileCompressFile</span><span style="color: #009900;">(</span><span style="color: #009900;">)</span><span style="color: #339933;">;</span><br>
 <span style="color: #009900;">}</span></div>
-</div>
+</code></pre>
 <p>The following macro will compile the predefined file (file watcher) when editing LESS files.</p>
-<div class="geshifilter">
+<pre><code>
 <div class="javascript geshifilter-javascript" style="font-family:monospace;"><span style="color: #000066; font-weight: bold;">if</span> <span style="color: #009900;">(</span>extensions.<span style="color: #660066;">less</span><span style="color: #009900;">)</span> <span style="color: #009900;">{</span><br>
 &nbsp; &nbsp; <span style="color: #660066;">var</span> file <span style="color: #009900;">= '</span>ftp://path/to/file.less<span style="color: #009900;">';</span><br />
 &nbsp; &nbsp; extensions.<span style="color: #660066;">less</span>.<span style="color: #660066;">watchFile</span><span style="color: #009900;">(</span>file<span style="color: #009900;">)</span><span style="color: #339933;">;</span><br>
 <span style="color: #009900;">}</span></div>
-</div>
+</code></pre>
 
 <strong>Important</strong>  
 When switching between marco(if you use the same marco) you have to reset the trigger,  
