@@ -8,17 +8,17 @@ A bug with the @import is now fixed (is handled by the extension it self), and a
 <h2>Use</h2>
 <p>Goto to Tools -&gt; LESS and select an option.</p>
 <ul>
-<li><em>Compile Saved File into CSS</em>  
+<li><em>Compile Saved File into CSS</em> <br>
 takes a .less file and creates a .css file with the same name in the same spot as the .less file.</li>
-<li><em>Compile Current Buffer</em>  
+<li><em>Compile Current Buffer</em> <br>
 into CSS takes the contents of the current buffer and turns it into CSS.</li>
-<li><em>Compile Selection into CSS</em>  
+<li><em>Compile Selection into CSS</em><br> 
 takes the current selection and turns it into CSS.</li>
-<li><em>Compile and Compress Saved File into CSS</em>  
+<li><em>Compile and Compress Saved File into CSS</em> <br>
 takes a .less file and creates a .css file with the same name in the same spot as the .less file. The .less file will be compressed/minified.</li>
-<li><em>Compile and Compress Current Buffer</em>  
+<li><em>Compile and Compress Current Buffer</em> <br>
 into CSS takes the contents of the current buffer and turns it into compressed CSS.</li>
-<li><em>Compile and Compress Selection into CSS</em>  
+<li><em>Compile and Compress Selection into CSS</em> <br> 
 takes the current selection and turns it into compressed CSS.</li>
 </ul>
 <em>When you right-click on the file you get the same option list (LESS > options).</em>
