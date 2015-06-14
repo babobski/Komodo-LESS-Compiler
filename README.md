@@ -20,24 +20,24 @@ A bug with the @import is now fixed (is handled by the extension it self), and a
 
 <h2>Macro</h2>
 <p>You can create a macro that will automatically turn a .less file into CSS when you save. Use the following code and have it trigger After file save:</p>
-<pre><code>
-<div class="javascript geshifilter-javascript" style="font-family:monospace;"><span style="color: #000066; font-weight: bold;">if</span> <span style="color: #009900;">(</span>extensions.<span style="color: #660066;">less</span><span style="color: #009900;">)</span> <span style="color: #009900;">{</span><br>
-&nbsp; &nbsp; extensions.<span style="color: #660066;">less</span>.<span style="color: #660066;">compileFile</span><span style="color: #009900;">(</span><span style="color: #009900;">)</span><span style="color: #339933;">;</span><br>
-<span style="color: #009900;">}</span></div>
-</code></pre>
+```javascript
+if (extensions.less) {
+	extensions.less.compileFile();
+}
+```
 <p>The following macro will compile and compress the css.</p>
-<pre><code>
-<div class="javascript geshifilter-javascript" style="font-family:monospace;"><span style="color: #000066; font-weight: bold;">if</span> <span style="color: #009900;">(</span>extensions.<span style="color: #660066;">less</span><span style="color: #009900;">)</span> <span style="color: #009900;">{</span><br>
-&nbsp; &nbsp; extensions.<span style="color: #660066;">less</span>.<span style="color: #660066;">compileCompressFile</span><span style="color: #009900;">(</span><span style="color: #009900;">)</span><span style="color: #339933;">;</span><br>
-<span style="color: #009900;">}</span></div>
-</code></pre>
+```javascript
+if (extensions.less) {
+	extensions.less.compileCompressFile();
+}
+```
 <p>The following macro will compile the predefined file (file watcher) when editing LESS files.</p>
-<pre><code>
-<div class="javascript geshifilter-javascript" style="font-family:monospace;"><span style="color: #000066; font-weight: bold;">if</span> <span style="color: #009900;">(</span>extensions.<span style="color: #660066;">less</span><span style="color: #009900;">)</span> <span style="color: #009900;">{</span><br>
-&nbsp; &nbsp; <span style="color: #660066;">var</span> file <span style="color: #009900;">= '</span>ftp://path/to/file.less<span style="color: #009900;">';</span><br />
-&nbsp; &nbsp; extensions.<span style="color: #660066;">less</span>.<span style="color: #660066;">watchFile</span><span style="color: #009900;">(</span>file<span style="color: #009900;">)</span><span style="color: #339933;">;</span><br>
-<span style="color: #009900;">}</span></div>
-</code></pre>
+```javascript
+if (extensions.less) {
+	var file = 'ftp://path/to/file.less';
+	extensions.less.watchFile(file);
+}
+```
 
 <strong>Important</strong>  
 When switching between marco(if you use the same marco) you have to reset the trigger,  
