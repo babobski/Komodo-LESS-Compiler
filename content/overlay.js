@@ -120,34 +120,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	this.watchFile = function(file) {
 		this.compileFile(true, false, file);
 	}
-
-	this.compileSelection = function(compress) {
-		compress = compress || false;
-
-		var view = ko.views.manager.currentView,
-			scimoz = view.scintilla.scimoz;
-			text = scimoz.selText;
-			
-			less.render(text, { compress: compress })
-			.then(function(output) {
-				var css = output.css;
-				scimoz.targetStart = scimoz.currentPos;
-				scimoz.targetEnd = scimoz.anchor;
-				scimoz.replaceTarget(css.length, css);
-				self._log('Compiling LESS selection', konsole.S_NOTICE);
-			},
-			function(error) {
-				self._log('Compile errror ' + error, konsole.S_ERROR);
-			});
-	};
-
-	this.compileCompressSelection = function() {
-		this.compileSelection(true);
-	}
-	
-	this.watchFile = function(file) {
-		this.compileFile(true, false, file);
-	}
 	 
 	this._process_imports = function(imports, rootPath) {
 		
