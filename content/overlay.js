@@ -32,24 +32,17 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		}
 		
 		if (file.ext == '.less') {
-			self._log('Compiling LESS file', konsole.S_NOTICE);
+			self._log('Compiling LESS file', konsole.S_LESS);
 			
 			if (fileWatcher !== false) {
 				path = fileWatcher;
 				base = path.substr(path.lastIndexOf('/') + 1, path.lenght),
 				buffer = self._readFile(fileWatcher, '')[0];
 			}
+		
+			outputLess = self._proces_less(path, base, buffer);
 			
-			var rootPath = path.replace(base, ''),
-			lessCss = String(buffer),
-			outputLess = '',
-			cleanLess = lessCss.replace( /\/\/@import\s*['"][^"]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^"]+["'];/g, '' ), //remove @imports in comment
-			imports = cleanLess.split(/(@import\s*['"][^"';]+['"];|@import\s+\W[^"]+\W\s+['"][^''";]+["'];)/g),
-			compresLess = compress;//split on imports to process them
-			
-			outputLess = self._processImports(imports, rootPath);
-			
-			less.render(outputLess, {compress: compresLess})
+			less.render(outputLess, {compress: compress})
 			.then(function(output) {
 				var newFilename = path.replace('.less', '.css');
 
@@ -57,7 +50,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				self._log('File saved', konsole.S_OK) 
 			},
 			function(error) {
-				self._log('Compile errror ' + error, konsole.S_ERROR);
+				self._log( error, konsole.S_ERROR);
 			});
 		} else {
 			return;
@@ -71,21 +64,61 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	this.compileBuffer = function(compress) {
 		compress = compress || false;
 
-		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc;
+		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
+			file = d.file,
+			buffer = d.buffer,
+			base = file.baseName,
+			path = (file) ? file.URI : null;
 		
-		less.render(d.buffer, { compress: compress })
+		outputLess = self._proces_less(path, base, buffer);
+		
+		less.render(outputLess, {compress: compress})
 		.then(function(output) {
 			d.buffer = output.css;
-			self._log('Compiling LESS buffer', konsole.S_NOTICE);
+			self._log('Compiling LESS buffer', konsole.S_LESS);
 		},
 		function(error) {
-			self._log('Compile errror ' + error, konsole.S_ERROR);
+			self._log( error, konsole.S_ERROR);
 		});
-
 	};
 
 	this.compileCompressBuffer = function() {
 		this.compileBuffer(true);
+	}
+
+	this.compileSelection = function(compress) {
+		compress = compress || false;
+
+		var view = ko.views.manager.currentView,
+			scimoz = view.scintilla.scimoz;
+			text = scimoz.selText,
+			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
+			file = d.file,
+			buffer = d.buffer,
+			base = file.baseName,
+			path = (file) ? file.URI : null;
+		
+			outputLess = self._proces_less(path, base, buffer);
+		
+			less.render(outputLess, {compress: compress})
+			.then(function(output) {
+				var css = output.css;
+				scimoz.targetStart = scimoz.currentPos;
+				scimoz.targetEnd = scimoz.anchor;
+				scimoz.replaceTarget(css.length, css);
+				self._log('Compiling LESS selection', konsole.S_LESS);
+			},
+			function(error) {
+				self._log( error, konsole.S_ERROR);
+			});
+	};
+
+	this.compileCompressSelection = function() {
+		this.compileSelection(true);
+	}
+	
+	this.watchFile = function(file) {
+		this.compileFile(true, false, file);
 	}
 
 	this.compileSelection = function(compress) {
@@ -116,7 +149,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		this.compileFile(true, false, file);
 	}
 	 
-	this._processImports = function(imports, rootPath) {
+	this._process_imports = function(imports, rootPath) {
 		
 		var buffer = '',
 		newContent = '';
@@ -136,9 +169,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						buffer = buffer + newContent[0];
 						
 						if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
-							var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^"]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^"]+["'];/g, '' ), 
+							var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
 							newImport = cleanLess.split(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/g);
-							buffer = self._processImports(newImport, newContent[1]);
+							buffer = self._process_imports(newImport, newContent[1]);
 						} 
 					}
 				}
@@ -163,9 +196,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 								buffer = buffer + newContent[0];
 								
 								if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
-									var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^"]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^"]+["'];/g, '' ), 
+									var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
 									newImport = cleanLess.split(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/g);
-									buffer = self._processImports(newImport, newContent[1]);
+									buffer = self._process_imports(newImport, newContent[1]);
 								} 
 							}
 							break;
@@ -185,9 +218,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 								buffer = buffer + newContent[0];
 								
 								if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
-									var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^"]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^"]+["'];/g, '' ), 
+									var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
 									newImport = cleanLess.split(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/g);
-									buffer = self._processImports(newImport, newContent[1]);
+									buffer = self._process_imports(newImport, newContent[1]);
 								} 
 							}
 							break;
@@ -203,6 +236,23 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		} 
 		
 		return buffer;
+	}
+	
+	this._get_imports = function(content){
+		var cleanLess = content.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
+			newImports = cleanLess.split(/(@import\s*['"][^"';]+['"];|@import\s+\W[^"]+\W\s+['"][^''";]+["'];)/g);
+			return newImports;
+	}
+	
+	this._proces_less = function(path, base, buffer) {
+		var rootPath = path.replace(base, ''),
+			lessCss = String(buffer),
+			LESS = '';
+			
+			less_imports = self._get_imports(lessCss);
+			LESS = self._process_imports(less_imports, rootPath);
+			
+			return LESS;
 	}
 
 	this._saveFile = function(filepath, filecontent) {
