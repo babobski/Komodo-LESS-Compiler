@@ -2,10 +2,10 @@ Less 2.5.0 Compiler for Komdo Edit/Ide
 =========================
 
 a LESS 2.5.0 compiler for Komodo Edit/Ide.  
-Based on the old  [LESS](https://community.activestate.com/node/7416) compiler (with version 1.2.1), its updated to work with the (latest) LESS 2.5.0 version.
+Based on the old  [LESS](https://community.activestate.com/node/7416) compiler (with LESS version 1.2.1), its updated to work with the (latest) LESS 2.5.0 version.
 A bug with the @import is now fixed (is handled by the extension it self), and a file watcher ability was added.
 
-<h2>Use</h2>
+<h2>Usage</h2>
 <p>Goto to Tools -&gt; LESS and select an option.</p>
 <ul>
 <li><strong><em>Compile Saved File into CSS</em></strong><br>
