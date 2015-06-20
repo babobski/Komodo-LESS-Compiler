@@ -44,7 +44,4 @@ if (extensions.less) {
 	extensions.less.watchFile(file);
 }
 ```
-
-<strong>Important</strong>  
-When switching between marco(if you use the same marco) you have to reset the trigger,  
-this can be done by selecting a other trigger click on apply set the trigger back to 'after file safe' and save the marco.
+ 
