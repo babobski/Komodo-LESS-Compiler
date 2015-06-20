@@ -40,9 +40,9 @@
  * Command Output tab tool
  * To code with style, and use styles :)
  */
-if (typeof(konsole) == 'undefined' || konsole.version < '1.2.3') konsole = {
+if (typeof(konsole) == 'undefined' || konsole.version == '1.1.custom') konsole = {
 
-  version     : '1.2.3',
+  version     : '1.1.custom',
   
   S_DEFAULT   	: 0,
   S_STRONG    	: 1,
@@ -61,9 +61,9 @@ if (typeof(konsole) == 'undefined' || konsole.version < '1.2.3') konsole = {
    * @type array [ [RGB Color, Bold, Italic], ... ]
    */
   styles : [
-    [0x000000, 0, 0], [0x000000, 1, 0], [0x009900, 1, 0], [0x4F4F4F, 1, 0],
-    [0xFFAA00, 1, 0], [0xF22E2E, 1, 0], [0x0055AA, 1, 0], [0x595959, 0, 0],
-    [0xA0A0A0, 0, 0], [0x365586, 1, 0], [0xCf649A, 0, 0], [0xFFFF55, 0, 0],
+    [0x000000, 0, 0], [0x000000, 1, 0], [0x04BD45, 1, 0], [0x5B5B5B, 1, 0],
+    [0xFFAA00, 1, 0], [0xF22E2E, 1, 0], [0x0055AA, 1, 0], [0x5B5B5B, 0, 0],
+    [0x5B5B5B, 0, 0], [0x365586, 1, 0], [0xCf649A, 0, 0], [0xFFFF55, 0, 0],
     [0x5555FF, 0, 0], [0xFF55FF, 0, 0], [0x55FFFF, 0, 0], [0x000000, 1, 0]
   ],
   /**

@@ -69,13 +69,15 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			buffer = d.buffer,
 			base = file.baseName,
 			path = (file) ? file.URI : null;
+			
+		self._log('Compile LESS buffer', konsole.S_LESS);
 		
 		outputLess = self._proces_less(path, base, buffer);
 		
 		less.render(outputLess, {compress: compress})
 		.then(function(output) {
 			d.buffer = output.css;
-			self._log('Compiling LESS buffer', konsole.S_LESS);
+			self._log('Compiled LESS buffer', konsole.S_OK);
 		},
 		function(error) {
 			self._log( error, konsole.S_ERROR);
@@ -97,6 +99,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			fileContent = d.buffer,
 			base = file.baseName,
 			path = (file) ? file.URI : null;
+			
+			self._log('Compiling LESS selection', konsole.S_LESS);
 		
 			outputLess = self._proces_less(path, base, fileContent);
 		
@@ -106,7 +110,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				scimoz.targetStart = scimoz.currentPos;
 				scimoz.targetEnd = scimoz.anchor;
 				scimoz.replaceTarget(css.length, css);
-				self._log('Compiling LESS selection', konsole.S_LESS);
+				self._log('Compiled LESS selection', konsole.S_OK);
 			},
 			function(error) {
 				self._log( error, konsole.S_ERROR);
