@@ -128,23 +128,27 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	this._process_imports = function(imports, rootPath) {
 		
 		var buffer = '',
-		newContent = '';
+		newContent = '',
+		matchImports = /(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/,
+		matchValue = /['"](.*?)['"]/,
+		nameHasDot = /[a-z0-9][.][a-z]/i,
+		quotes = /['"]+/g;
 		
 		if (imports !== -1) {
 			imports.forEach(function(value, i){
 				//if is regular @import
 				if (value.match(/@import\s*['"][^"]+['"];/) !== null) {
-					if (value.match(/['"](.*?)['"]/) !== null) {
-						var xf = value.match(/['"](.*?)['"]/),
-						fileName = xf.toString().split(',')[1].replace(/['"]+/g, '');
-						if (fileName.match(/[a-z0-9][.][a-z]/i) == null) {
+					if (value.match(matchValue) !== null) {
+						var xf = value.match(matchValue),
+						fileName = xf.toString().split(',')[1].replace(quotes, '');
+						if (fileName.match(nameHasDot) == null) {
 							fileName = fileName + '.less';
 						}
 						self._log('@import ' + fileName, konsole.S_CUSTOM);
 						newContent = self._readFile(rootPath,  fileName);
 						buffer = buffer + newContent[0];
 						
-						if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
+						if (buffer.toString().match(matchImports) !== null) {
 							var cleanLess = self._strip_comments(buffer);
 							newImport = self._split_on_imports(cleanLess);
 							buffer = self._process_imports(newImport, newContent[1]);
@@ -161,17 +165,17 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 							buffer = buffer + value;
 							break;
 						case 'less':
-							if (value.match(/['"](.*?)['"]/) !== null) {
-								var xf = value.match(/['"](.*?)['"]/),
-								fileName = xf.toString().split(',')[1].replace(/['"]+/g, '');
-								if (fileName.match(/[a-z0-9][.][a-z]/i) == null) {
+							if (value.match(matchValue) !== null) {
+								var xf = value.match(matchValue),
+								fileName = xf.toString().split(',')[1].replace(quotes, '');
+								if (fileName.match(nameHasDot) == null) {
 									fileName = fileName + '.less';
 								}
 								self._log('@import ' + fileName, konsole.S_CUSTOM);
 								newContent = self._readFile(rootPath,  fileName);
 								buffer = buffer + newContent[0];
 								
-								if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
+								if (buffer.toString().match(matchImports) !== null) {
 									var cleanLess = self._strip_comments(buffer);
 									newImport = self._split_on_imports(cleanLess);
 									buffer = self._process_imports(newImport, newContent[1]);
@@ -184,16 +188,16 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						case 'multiple':
 						default:
 							self._log('@import (' + type + ') is not supported, file is treated as LESS' , konsole.S_WARNING);
-							if (value.match(/['"](.*?)['"]/) !== null) {
-								var xf = value.match(/['"](.*?)['"]/),
-								fileName = xf.toString().split(',')[1].replace(/['"]+/g, '');
-								if (fileName.match(/[a-z0-9][.][a-z]/i) == null) {
+							if (value.match(matchValue) !== null) {
+								var xf = value.match(matchValue),
+								fileName = xf.toString().split(',')[1].replace(quotes, '');
+								if (fileName.match(nameHasDot) == null) {
 									fileName = fileName + '.less';
 								}
 								newContent = self._readFile(rootPath,  fileName);
 								buffer = buffer + newContent[0];
 								
-								if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
+								if (buffer.toString().match(matchImports) !== null) {
 									var cleanLess = self._strip_comments(buffer);
 									newImport = self._split_on_imports(cleanLess);
 									buffer = self._process_imports(newImport, newContent[1]);
@@ -261,10 +265,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		
 		var fileUrl,
 			fullUrl = root + filepath,
-			newRoot = '';
+			newRoot = '',
+			backPatern = /[.][.][/]+/;
 		
 		//figure out ftp path if ../ in path
-		if (filepath.search(/[.][.][/]+/) !== -1 ) {
+		if (filepath.search(backPatern) !== -1 ) {
 			
 			var	url = fullUrl,
 				urlParts = root.split('/'),
@@ -293,10 +298,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					output = [];
 		
 		reader.path = fileUrl;
-		
-		
-			
-		
 		
 		try {
 			reader.open("r");

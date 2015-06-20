@@ -40,9 +40,9 @@
  * Command Output tab tool
  * To code with style, and use styles :)
  */
-if (typeof(konsole) == 'undefined' || konsole.version == '1.1.custom') konsole = {
+if (typeof(konsole) == 'undefined' || konsole.version == 'babobski-1.1') konsole = {
 
-  version     : '1.1.custom',
+  version     : 'babobski-1.1',
   
   S_DEFAULT   	: 0,
   S_STRONG    	: 1,
@@ -61,9 +61,9 @@ if (typeof(konsole) == 'undefined' || konsole.version == '1.1.custom') konsole =
    * @type array [ [RGB Color, Bold, Italic], ... ]
    */
   styles : [
-    [0x000000, 0, 0], [0x000000, 1, 0], [0x04BD45, 1, 0], [0x5B5B5B, 1, 0],
+    [0x000000, 0, 0], [0x000000, 1, 0], [0x00AE4A, 1, 0], [0x5B5B5B, 1, 0],
     [0xFFAA00, 1, 0], [0xF22E2E, 1, 0], [0x0055AA, 1, 0], [0x5B5B5B, 0, 0],
-    [0x5B5B5B, 0, 0], [0x365586, 1, 0], [0xCf649A, 0, 0], [0xFFFF55, 0, 0],
+    [0x5B5B5B, 0, 0], [0x3E6099, 1, 0], [0xCf649A, 0, 0], [0xFFFF55, 0, 0],
     [0x5555FF, 0, 0], [0xFF55FF, 0, 0], [0x55FFFF, 0, 0], [0x000000, 1, 0]
   ],
   /**
