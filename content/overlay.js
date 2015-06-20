@@ -94,11 +94,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			text = scimoz.selText,
 			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
-			buffer = d.buffer,
+			fileContent = d.buffer,
 			base = file.baseName,
 			path = (file) ? file.URI : null;
 		
-			outputLess = self._proces_less(path, base, buffer);
+			outputLess = self._proces_less(path, base, fileContent);
 		
 			less.render(outputLess, {compress: compress})
 			.then(function(output) {
@@ -141,8 +141,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						buffer = buffer + newContent[0];
 						
 						if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
-							var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
-							newImport = cleanLess.split(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/g);
+							var cleanLess = self._strip_comments(buffer);
+							newImport = self._split_on_imports(cleanLess);
 							buffer = self._process_imports(newImport, newContent[1]);
 						} 
 					}
@@ -168,8 +168,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 								buffer = buffer + newContent[0];
 								
 								if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
-									var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
-									newImport = cleanLess.split(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/g);
+									var cleanLess = self._strip_comments(buffer);
+									newImport = self._split_on_imports(cleanLess);
 									buffer = self._process_imports(newImport, newContent[1]);
 								} 
 							}
@@ -190,8 +190,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 								buffer = buffer + newContent[0];
 								
 								if (buffer.toString().match(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/) !== null) {
-									var cleanLess = buffer.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
-									newImport = cleanLess.split(/(@import\s*['"][^"]+['"];|@import\s+\W[^"]+\W\s+['"][^"]+["'];)/g);
+									var cleanLess = self._strip_comments(buffer);
+									newImport = self._split_on_imports(cleanLess);
 									buffer = self._process_imports(newImport, newContent[1]);
 								} 
 							}
@@ -211,8 +211,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	}
 	
 	this._get_imports = function(content){
-		var cleanLess = content.toString().replace( /\/\/@import\s*['"][^";]+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g, '' ), 
-			newImports = cleanLess.split(/(@import\s*['"][^"';]+['"];|@import\s+\W[^"]+\W\s+['"][^''";]+["'];)/g);
+		var cleanLess = self._strip_comments(content), 
+			newImports = self._split_on_imports(cleanLess);
 			return newImports;
 	}
 	
@@ -225,6 +225,16 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			LESS = self._process_imports(less_imports, rootPath);
 			
 			return LESS;
+	}
+	
+	this._strip_comments = function(string) {
+		var patern = /\/\/@import\s+['"][^']+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g;
+		return string.toString().replace(patern , '' );
+	}
+	
+	this._split_on_imports = function(cleanless){
+		var patern = /(@import\s*['"][^"';]+['"];|@import\s+\W[^"]+\W\s+['"][^''";]+["'];)/g;
+		return cleanless.split(patern);
 	}
 
 	this._saveFile = function(filepath, filecontent) {
@@ -279,6 +289,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					output = [];
 		
 		reader.path = fileUrl;
+		
+		
 			
 		
 		
