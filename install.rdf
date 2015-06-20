@@ -3,11 +3,11 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
     <Description about="urn:mozilla:install-manifest">
 <em:unpack>true</em:unpack>
-        <em:id>less@ericfaerber.com</em:id>
+        <em:id>lesscompiler@komodoeditide.com</em:id>
         <em:name>LESS Compiler</em:name>
         <em:version>2.5.0</em:version>
         <em:description>Less compiler for komodo edit/ide</em:description>
-        <em:creator>Eric Faerber / Bob de Haas</em:creator>
+        <em:creator>Bob de Haas</em:creator>
 		<em:iconURL>chrome://less/content/komodo-less.png</em:iconURL>
         <em:homepageURL></em:homepageURL>
         <em:type>2</em:type> <!-- type=extension -->
