@@ -58,7 +58,7 @@ if (extensions.less) {
     extensions.less.varCompletion();
 }
  ```
- <p>The next marco is for getting the vars form your document (current view) (trigger on custom key binding, i use <kbd>Alt</kbd> + <kbd>g</kbd>)<br>
+ <p>The next marco is for getting the @vars form your document (current view) (trigger on custom key binding, i use <kbd>Alt</kbd> + <kbd>g</kbd>)<br>
  if you working with less and you have not search for @vars and you trigger the completion (by typing @ not on the beginning of a line) the extension will search in the current document.</p>
  ```javascript
  if (extensions.less) {
