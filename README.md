@@ -44,7 +44,6 @@ if (extensions.less) {
 	extensions.less.watchFile(file);
 }
 ```
-<br><br>
 <b>NOTE</b>  
 when switching between marco's, or changing files you will have to set the trigger of the marco on a other event, save the marco, opn it and change it back. This will trigger a refresh on the marco, otherwhise sometimes the old file gets triggerd.
 
@@ -62,7 +61,7 @@ if (extensions.less) {
 }
  ```
  <p>The next marco is for getting the @vars form your document (current view) (trigger on custom key binding, i use <kbd>Alt</kbd> + <kbd>g</kbd>)<br>
- if you working with less and you have not search for @vars and you trigger the completion (by typing @ not on the beginning of a line) the extension will search in the current document.</p>
+ if you working with LESS and you have not search for @vars and you trigger the completion (by typing @ not on the beginning of a line) the extension will search in the current document.</p>
  ```javascript
  if (extensions.less) {
 	// optional you can add a file, if you are using the filewatcher mode
