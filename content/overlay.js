@@ -359,12 +359,27 @@ var lessData = ko.extensions[myExt].myapp;
 			allVars = bufferVars.toString().split(',');
 			
 			allVars.forEach(function(value, i){
-				output[i] = value.replace(/[:]+/g, '');	
+				var val = value.replace(/[:,]+/g, '');
+				if (!self._in_array(val, output)) {
+					output.push(val);	
+				}
 			})
 			
 			return output;
 		}
 		
+	}
+	
+	this._in_array = function (search, array)
+	{
+	for (i = 0; i < array.length; i++)
+	{
+	if(array[i] ==search )
+	{
+	return true;
+	}
+	}
+	return false;
 	}
 	
 	this.varCompletion = function(){
@@ -430,8 +445,19 @@ var lessData = ko.extensions[myExt].myapp;
 				file = d.file;
 				
 				if (file.ext == '.less') {
-					this.removeWhiteSpace();
 					inserted = false;
+					this.removeWhiteSpace();
+				}
+			}
+		
+			//trigger on )
+			if (e.charCode == 41 && inserted == true) {
+				var  d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
+				file = d.file;
+				
+				if (file.ext == '.less') {
+					inserted = false;
+					this.removeWhiteSpace();
 				}
 			}
 			
@@ -451,10 +477,17 @@ var lessData = ko.extensions[myExt].myapp;
 						scimoz.charRight();
 						scimoz.deleteBackNotLine();
 					}
-					if (/;/.test(scimoz.getWCharAt(scimoz.currentPos).toString())) {
-						scimoz.charRight();
-						scimoz.deleteBackNotLine();
-					} 
+					
+					switch (scimoz.getWCharAt(scimoz.currentPos).toString()) {
+						case ';':
+							scimoz.charRight();
+							scimoz.deleteBackNotLine();
+							break;
+						case ')':
+							scimoz.charRight();
+							scimoz.deleteBackNotLine();
+							break;
+					}
 				}
 			}
 			
