@@ -152,8 +152,9 @@ var lessData = ko.extensions[myExt].myapp;
 		this.compileFile(true, false, file);
 	}
 	
-	this.getVars = function(){
-		this.compileFile(false, false, false, true);
+	this.getVars = function(fileWatcher){
+		fileWatcher = fileWatcher || false;
+		this.compileFile(false, false, fileWatcher, true);
 	}
 	
 	this._process_imports = function(imports, rootPath) {
