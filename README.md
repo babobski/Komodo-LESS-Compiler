@@ -24,7 +24,7 @@ takes the current selection and turns it into compressed CSS.</li>
 <em>When you right-click on the file you get the same option list (LESS > options).</em>
 
 
-<h2>Macro</h2>
+<h2>Macro's</h2>
 <p>You can create a macro that will automatically turn a .less file into CSS when you save. Use the following code and have it trigger After file save:</p>
 ```javascript
 if (extensions.less) {
@@ -45,7 +45,7 @@ if (extensions.less) {
 }
 ```
 <b>NOTE</b>  
-when switching between marco's, or changing files you will have to set the trigger of the marco on a other event, save the marco, opn it and change it back. This will trigger a refresh on the marco, otherwhise sometimes the old file gets triggerd.
+<em>when switching between marco's, or changing files you will have to set the trigger of the marco on a other event, save the marco, opn it and change it back. This will trigger a refresh on the marco, otherwhise sometimes the old file gets triggerd.</em>
 
 <h2>@vars completion</h2>
 <p>This extension also includes a @var auto completion for a better LESS integration in Komodo.<br>
