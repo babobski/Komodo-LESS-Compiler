@@ -44,7 +44,7 @@ if (extensions.less) {
 	extensions.less.watchFile(file);
 }
 ```
-<b>NOTE</b>  
+<b><em>NOTE</em></b>  
 <em>when switching between marco's, or changing files you will have to set the trigger of the marco on a other event, save the marco, opn it and change it back. This will trigger a refresh on the marco, otherwhise sometimes the old file gets triggerd.</em>
 
 <h2>@vars completion</h2>
@@ -65,7 +65,7 @@ if (extensions.less) {
  ```javascript
  if (extensions.less) {
 	// optional you can add a file, if you are using the filewatcher mode
-	//var file = 'ftp://path/to/file.less';
-    extensions.less.getVars();
+	// var file = 'ftp://path/to/file.less';
+    extensions.less.getVars(); // or .getVars(file);
 }
 ```

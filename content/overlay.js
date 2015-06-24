@@ -21,8 +21,6 @@ var lessData = ko.extensions[myExt].myapp;
 		prefs = Components.classes["@mozilla.org/preferences-service;1"]
         .getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
 		
-		
-
 	this.compileFile = function(showWarning, compress, fileWatcher, getVars) {
 		showWarning = showWarning || false;
 		compress = compress || false;
@@ -64,7 +62,6 @@ var lessData = ko.extensions[myExt].myapp;
 				} else {
 					lessData.vars = [ "@No_vars_found" ];
 					self._log('No LESS vars found', konsole.S_ERROR);
-					
 				}
 				
 			} else {
@@ -239,7 +236,6 @@ var lessData = ko.extensions[myExt].myapp;
 					}
 					
 				}
-				
 				//if isn't @import it's less/css
 				if (value.match(/@import\s*['"][^"]+['"];/) == null && value.match(/@import\s+\W[^"]+\W\s+['"][^"]+["'];/) == null) {
 					buffer = buffer + value;
@@ -371,16 +367,13 @@ var lessData = ko.extensions[myExt].myapp;
 		
 	}
 	
-	this._in_array = function (search, array)
-	{
-	for (i = 0; i < array.length; i++)
-	{
-	if(array[i] ==search )
-	{
-	return true;
-	}
-	}
-	return false;
+	this._in_array = function (search, array) {
+		for (i = 0; i < array.length; i++) {
+			if(array[i] ==search ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	this.varCompletion = function(){
@@ -395,7 +388,6 @@ var lessData = ko.extensions[myExt].myapp;
 			var sep = String.fromCharCode(scimoz.autoCSeparator);
 			var completions = lessData.vars;
 			var defaultcompletion = ["@import", "@media", "@font-face", "@key-frame", "@-webkit-key-frames"];
-			
 			
 			if (e.shiftKey && e.charCode == 64)		
 			{
@@ -491,9 +483,7 @@ var lessData = ko.extensions[myExt].myapp;
 					}
 				}
 			}
-			
 		};
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
 	}
-
 }).apply(extensions.less);
