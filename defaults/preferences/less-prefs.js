@@ -1,1 +1,1 @@
-pref("extensions.less.showMessages", true);
+pref("extensions.less.showMessages", false);
