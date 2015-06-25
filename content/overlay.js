@@ -10,16 +10,16 @@ xtk.load('chrome://less/content/less/less.min.js');
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.0' };
 
-if (!('less' in ko)) ko.extensions = {}; 
-var myExt = "lesscompiler@komodoeditide.com" ; 
-if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
-if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
-var lessData = ko.extensions[myExt].myapp;
-
 (function() {
 	var self = this,
 		prefs = Components.classes["@mozilla.org/preferences-service;1"]
         .getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
+		
+	if (!('less' in ko)) ko.extensions = {}; 
+	var myExt = "lesscompiler@komodoeditide.com" ; 
+	if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
+	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
+	var lessData = ko.extensions[myExt].myapp;
 		
 	this.compileFile = function(showWarning, compress, fileWatcher, getVars) {
 		showWarning = showWarning || false;
@@ -43,6 +43,9 @@ var lessData = ko.extensions[myExt].myapp;
 			
 			if (getVars) {
 				self._log('Getting LESS vars', konsole.S_LESS);
+				if (prefs.getBoolPref('showMessages') == false) {
+					self._notifcation('Getting LESS vars');
+				}
 			} else {
 				self._log('Compiling LESS file', konsole.S_LESS);
 			}
@@ -70,7 +73,10 @@ var lessData = ko.extensions[myExt].myapp;
 					var newFilename = path.replace('.less', '.css');
 	
 					self._saveFile(newFilename, output.css);
-					self._log('File saved', konsole.S_OK) 
+					self._log('File saved', konsole.S_OK)
+					if (prefs.getBoolPref('showMessages') == false) {
+						self._notifcation('LESS File saved');
+					}
 				},
 				function(error) {
 					self._log( error, konsole.S_ERROR);
@@ -95,6 +101,9 @@ var lessData = ko.extensions[myExt].myapp;
 			path = (file) ? file.URI : null;
 			
 		self._log('Compile LESS buffer', konsole.S_LESS);
+		if (prefs.getBoolPref('showMessages') == false) {
+			self._notifcation('Compile LESS buffer');
+		}
 		
 		outputLess = self._proces_less(path, base, buffer);
 		
@@ -125,6 +134,9 @@ var lessData = ko.extensions[myExt].myapp;
 			path = (file) ? file.URI : null;
 			
 			self._log('Compiling LESS selection', konsole.S_LESS);
+			if (prefs.getBoolPref('showMessages') == false) {
+				self._notifcation('Compiling LESS selection');
+			}
 		
 			outputLess = self._proces_less(path, base, fileContent);
 		
@@ -146,11 +158,10 @@ var lessData = ko.extensions[myExt].myapp;
 	}
 	
 	this.watchFile = function(file) {
-		this.compileFile(true, false, file);
+		this.compileFile(true, false, file, false);
 	}
 	
 	this.getVars = function(fileWatcher){
-		fileWatcher = fileWatcher || false;
 		this.compileFile(false, false, fileWatcher, true);
 	}
 	
@@ -346,6 +357,33 @@ var lessData = ko.extensions[myExt].myapp;
 		}
 	};
 	
+	this._notifcation = function($message){
+		$message =$message || false;
+		if (!("Notification" in window)) {
+		  alert("This browser does not support system notifications");
+		}
+	  
+		else if (Notification.permission === "granted") {
+		  var options = {
+			body: $message
+		  }
+		  var n = new Notification('LESS Compiler', options);
+		  setTimeout(n.close.bind(n), 5000); 
+		}
+	  
+		else if (Notification.permission !== 'denied') {
+		  Notification.requestPermission(function (permission) {
+			if (permission === "granted") {
+				var options = {
+				   body: $message
+				 }
+				 var n = new Notification('LESS Compiler', options);
+				setTimeout(n.close.bind(n), 5000); 
+			}
+		  });
+		}
+	}
+	
 	this._getVars = function(buffer){
 		var bufferVars = '',
 			allVars,
@@ -381,9 +419,6 @@ var lessData = ko.extensions[myExt].myapp;
 		var inserted = false;
 		this._onKeyPress = function(e)
 		{
-			// Filter out CTRL+b
-			// Ref: https://developer.mozilla.org/en-US/docs/DOM/KeyboardEvent
-			// Ref: http://www.asquare.net/javascript/tests/KeyCode.html
 			var scimoz = ko.views.manager.currentView.scimoz;
 			var sep = String.fromCharCode(scimoz.autoCSeparator);
 			var completions = lessData.vars;
@@ -418,7 +453,9 @@ var lessData = ko.extensions[myExt].myapp;
 						if (typeof completions !== 'undefined' && completions.length > 0) {
 							completions = completions.sort();
 						} else {
-							self._log("No vars set, going find some!", konsole.S_WARNING);
+							if (prefs.getBoolPref('showMessages')) {
+								self._log("No vars set, going find some!", konsole.S_WARNING);
+							}
 							self.getVars();
 							return false;
 						}
