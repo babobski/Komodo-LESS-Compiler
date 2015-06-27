@@ -8,11 +8,21 @@
 	<prefpane id="less-pane" label="LESS Preferences">
 	  <preferences>
 		<preference id="pref_showMessages" name="extensions.less.showMessages" type="bool"/>
+		<preference id="pref_useFilewatcher" name="extensions.less.useFilewatcher" type="bool"/>
+		<preference id="pref_fileWatcher" name="extensions.less.fileWatcher" type="string"/>
 	  </preferences>
+	  
 
 	  <hbox align="center">
 		<checkbox id="showMessages" preference="pref_showMessages" label="Show console messages when saving files" />
 	  </hbox>
+	  
+	   <hbox align="center">
+		<checkbox id="useFilewatcher" preference="pref_useFilewatcher" label="Enable file watcher" />
+	  </hbox>
+	  
+	  <label control="fileWatcher" value="file watcher"/>
+		<textbox id="fileWatcher" preference="pref_fileWatcher"/>
 	</prefpane>
 
 </prefwindow>

@@ -20,19 +20,25 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
 	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
 	var lessData = ko.extensions[myExt].myapp;
+	
+	if (extensions.less && extensions.less.onKeyPress)
+	{
+		ko.views.manager.topView.removeEventListener(
+			'keypress',
+			extensions.less._onKeyPress, true
+		);
+	}
 		
-	this.compileFile = function(showWarning, compress, fileWatcher, getVars) {
+	this.compileFile = function(showWarning, compress, getVars) {
 		showWarning = showWarning || false;
 		compress = compress || false;
-		fileWatcher = fileWatcher || false;
 		getVars = getVars || false;
 
 		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
 			buffer = d.buffer,
 			base = file.baseName,
-			path = (file) ? file.URI : null,
-			scimoz = ko.views.manager.currentView.scimoz;
+			path = (file) ? file.URI : null;
 
 		if (!file) {
 			self._log('Please save the file first', konsole.S_ERROR);
@@ -50,10 +56,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				self._log('Compiling LESS file', konsole.S_LESS);
 			}
 			
-			if (fileWatcher !== false) {
-				path = fileWatcher;
+			if (prefs.getBoolPref('useFilewatcher')) {
+				path = prefs.getCharPref('fileWatcher');
 				base = path.substr(path.lastIndexOf('/') + 1, path.lenght),
-				buffer = self._readFile(fileWatcher, '')[0];
+				buffer = self._readFile(path, '')[0];
 			}
 		
 			outputLess = self._proces_less(path, base, buffer);
@@ -157,12 +163,47 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		this.compileSelection(true);
 	}
 	
-	this.watchFile = function(file) {
-		this.compileFile(true, false, file, false);
+	this.getVars = function(){
+		this.compileFile(false, false, true);
 	}
 	
-	this.getVars = function(fileWatcher){
-		this.compileFile(false, false, fileWatcher, true);
+	this.enableFileWatcher = function(){
+		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
+			file = d.file,
+			path = (file) ? file.URI : null;
+			
+
+		if (!file) {
+			self._log('Please save the file first', konsole.S_ERROR);
+			return;  
+		}
+		
+		if (file.ext == '.less') {
+			if (prefs.getBoolPref('useFilewatcher') == false) {
+				prefs.setBoolPref('useFilewatcher', true);
+			}
+			
+			prefs.setCharPref('fileWatcher', path);
+			self._log('file watcher enabled', konsole.S_OK);
+			if (prefs.getBoolPref('showMessages') == false) {
+				self._notifcation("file watcher enabled");
+			}
+		} else {
+			self._log('Please select a LESS file', konsole.S_ERROR);
+			return;  
+		}
+	}
+	
+	this.disableFileWatcher = function(){
+		if (prefs.getBoolPref('useFilewatcher')) {
+			prefs.setBoolPref('useFilewatcher', false);
+		}
+		
+		prefs.setCharPref('fileWatcher', '');
+		self._log('file watcher disabled', konsole.S_OK);
+		if (prefs.getBoolPref('showMessages') == false) {
+			self._notifcation("file watcher disabled");
+		}
 	}
 	
 	this._process_imports = function(imports, rootPath) {

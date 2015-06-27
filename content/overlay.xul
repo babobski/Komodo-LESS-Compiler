@@ -3,13 +3,15 @@
 	<script type="application/x-javascript" src="chrome://less/content/overlay.js" />
 
     <commandset id="allcommands">
-      <command id="Tasks:LessCompileFile" oncommand="extensions.less.watchFile(url);"/>
 	  <command id="Tasks:LessCompileFile" oncommand="extensions.less.compileFile(true);"/>
       <command id="Tasks:LessCompileBuffer" oncommand="extensions.less.compileBuffer();"/>
       <command id="Tasks:LessCompileSelection" oncommand="extensions.less.compileSelection();"/>
 	  <command id="Tasks:LessCompileFileCompress" oncommand="extensions.less.compileCompressFile(true);"/>
       <command id="Tasks:LessCompileBufferCompress" oncommand="extensions.less.compileCompressBuffer();"/>
       <command id="Tasks:LessCompileSelectionCompress" oncommand="extensions.less.compileCompressSelection();"/>
+	  <command id="Tasks:LessEnableFileWatcher" oncommand="extensions.less.enableFileWatcher();"/>
+	  <command id="Tasks:LessDisableFileWatcher" oncommand="extensions.less.disableFileWatcher();"/>
+	  <command id="Tasks:LessCollectVars" oncommand="extensions.less.getVars();"/>
     </commandset>
 
     <menupopup id="popup_tools">
@@ -40,6 +42,24 @@
                   label="Compile and Compress Selection into CSS"
                   observes="Tasks:LessCompileSelectionCompress"
                   class="menu-iconic-wide" />
+		  <menuitem id="menu_less_get_vars"
+                  label="Collect @vars"
+                  observes="Tasks:LessCollectVars"
+                  class="menu-iconic-wide" />
+		  <menu id="menu_filewatcher" label="File Watcher">
+			<menupopup id="menu_filewatcer_popup">
+				<menuitem id="menu_filewatcher_enable"
+					label="Enable File Watcher for current file"
+					observes="Tasks:LessEnableFileWatcher"
+					class="menu-iconic-wide">
+				</menuitem>
+				<menuitem id="menu_filewatcher_disable"
+					label="Disable File Watcher"
+					observes="Tasks:LessDisableFileWatcher"
+					class="menu-iconic-wide">
+				</menuitem>
+			</menupopup>
+		  </menu>
         </menupopup>
       </menu>
     </menupopup>
@@ -72,6 +92,24 @@
                   label="Compile and Compress Selection into CSS"
                   observes="Tasks:LessCompileSelectionCompress"
                   class="menu-iconic-wide" />
+			<menuitem id="menu_less_context_get_vars"
+                  label="Collect @vars"
+                  observes="Tasks:LessCollectVars"
+                  class="menu-iconic-wide" />
+			 <menu id="menu_context_filewatcher" label="File Watcher">
+				<menupopup id="menu_context_filewatcer_popup">
+					<menuitem id="menu_context_filewatcher_enable"
+						label="Enable File Watcher for current file"
+						observes="Tasks:LessEnableFileWatcher"
+						class="menu-iconic-wide">
+					</menuitem>
+					<menuitem id="menu_context_filewatcher_disable"
+						label="Disable File Watcher"
+						observes="Tasks:LessDisableFileWatcher"
+						class="menu-iconic-wide">
+					</menuitem>
+				</menupopup>
+			  </menu>
           </menupopup>
       </menu>
     </menupopup>

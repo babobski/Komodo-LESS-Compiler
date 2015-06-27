@@ -21,6 +21,18 @@ takes a .less file and creates a .css file with the same name in the same spot a
 into CSS takes the contents of the current buffer and turns it into compressed CSS.</li>
 <li><strong><em>Compile and Compress Selection into CSS</em></strong><br> 
 takes the current selection and turns it into compressed CSS.</li>
+<li><strong><em>Collect @vars</em></strong><br> 
+collect all the LESS @vars for auto completion.</li>
+<li><strong>File Watcher</strong><ul>
+<li>
+<strong>Enable File Watcher for current file</strong><br>
+Enables a file watcher for current LESS file
+</li>
+<li>
+<strong>disable File Watcher</strong><br>
+Disables the file watcher
+</li>
+</ul>
 </ul>
 <em>When you right-click on the file you get the same option list (LESS > options).</em>
 
@@ -38,15 +50,6 @@ if (extensions.less) {
 	extensions.less.compileCompressFile();
 }
 ```
-<p>The following macro will compile the predefined file (file watcher) when editing LESS files.</p>
-```javascript
-if (extensions.less) {
-	var file = 'ftp://path/to/file.less';
-	extensions.less.watchFile(file);
-}
-```
-<b><em>NOTE</em></b>  
-<em>when switching between marco's, or changing files you will have to set the trigger of the marco on a other event, save the marco, opn it and change it back. This will trigger a refresh on the marco, otherwhise sometimes the old file gets triggerd.</em>
 
 <h2>@vars completion</h2>
 <p>This extension also includes a @var auto completion for a better LESS integration in Komodo.<br>
