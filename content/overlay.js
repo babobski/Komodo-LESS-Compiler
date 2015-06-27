@@ -406,7 +406,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	  
 		else if (Notification.permission === "granted") {
 		  var options = {
-			body: $message
+			body: $message,
+			icon: 'chrome://less/content/less-icon.png'
 		  }
 		  var n = new Notification('LESS Compiler', options);
 		  setTimeout(n.close.bind(n), 5000); 
@@ -416,7 +417,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		  Notification.requestPermission(function (permission) {
 			if (permission === "granted") {
 				var options = {
-				   body: $message
+				   body: $message,
+				   icon: 'chrome://less/content/less-icon.png'
 				 }
 				 var n = new Notification('LESS Compiler', options);
 				setTimeout(n.close.bind(n), 5000); 
