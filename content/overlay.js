@@ -27,6 +27,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			'keypress',
 			extensions.less._onKeyPress, true
 		);
+		
+		ko.views.manager.topView.removeEventListener(
+			'onload',
+			extensions.less._cleanUp(), true
+		);
 	}
 		
 	this.compileFile = function(showWarning, compress, getVars) {
@@ -574,5 +579,5 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
 	}
 	
-	window.addEventListener('onload', self._cleanUp(), true);
+	ko.views.manager.topView.addEventListener('onload', self._cleanUp(), true);
 }).apply(extensions.less);
