@@ -457,9 +457,16 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		return false;
 	}
 	
+	this._cleanUp = function() {
+		if (prefs.getBoolPref('useFilewatcher')) {
+			self.disableFileWatcher();
+		}
+	}
+	
 	this.varCompletion = function(){
 		var editor_pane = ko.views.manager.topView;
 		var inserted = false;
+		
 		this._onKeyPress = function(e)
 		{
 			var scimoz = ko.views.manager.currentView.scimoz;
@@ -566,4 +573,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		};
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
 	}
+	
+	window.addEventListener('onload', self._cleanUp(), true);
 }).apply(extensions.less);
