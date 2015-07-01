@@ -479,6 +479,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			var completions = lessData.vars;
 			var defaultcompletion = ["@import", "@media", "@font-face", "@key-frame", "@-webkit-key-frames"];
 			
+			if (scimoz.autoCMaxHeight !== 10) {
+				scimoz.autoCMaxHeight = 10;
+			}
+			
 			if (e.shiftKey && e.charCode == 64)		
 			{
 				var  d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
