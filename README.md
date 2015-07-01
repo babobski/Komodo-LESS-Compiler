@@ -64,12 +64,10 @@ if (extensions.less) {
     extensions.less.varCompletion();
 }
  ```
- <p>The next marco is for getting the @vars form your document (current view) (trigger on custom key binding, i use <kbd>Alt</kbd> + <kbd>g</kbd>)<br>
+ <p>The next marco is for getting the @vars form your document (current view or the file where the file watcher is enabled including @imports) (trigger on custom key binding, i use <kbd>Alt</kbd> + <kbd>g</kbd>)<br>
  if you working with LESS and you have not search for @vars and you trigger the completion (by typing @ not on the beginning of a line) the extension will search in the current document.</p>
  ```javascript
  if (extensions.less) {
-	// optional you can add a file, if you are using the filewatcher mode
-	// var file = 'ftp://path/to/file.less';
-    extensions.less.getVars(); // or .getVars(file);
+    extensions.less.getVars(); 
 }
 ```
