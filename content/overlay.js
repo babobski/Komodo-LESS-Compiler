@@ -154,9 +154,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			less.render(outputLess, {compress: compress})
 			.then(function(output) {
 				var css = output.css;
-				scimoz.targetStart = scimoz.currentPos;
-				scimoz.targetEnd = scimoz.anchor;
-				scimoz.replaceTarget(css.length, css);
+				scimoz.replaceSel(css);
 				self._log('Compiled LESS selection', konsole.S_OK);
 			},
 			function(error) {
