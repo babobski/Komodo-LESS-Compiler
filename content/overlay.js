@@ -549,6 +549,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			}
 			
 			this.removeWhiteSpace = function () {
+				var current_line = scimoz.lineFromPosition(scimoz.currentPos);
 				scimoz.charLeft();
 				if (/\s/.test(scimoz.getWCharAt(scimoz.currentPos))) {
 					scimoz.charRight();
@@ -560,7 +561,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					this.removeWhiteSpace();
 				} else {
 					scimoz.charRight();
-					while (/[\t\s]/.test(scimoz.getWCharAt(scimoz.currentPos).toString())) {
+					while (/[\t\s]/.test(scimoz.getWCharAt(scimoz.currentPos).toString()) && current_line == scimoz.lineFromPosition(scimoz.currentPos)) {
 						scimoz.charRight();
 						scimoz.deleteBackNotLine();
 					}
@@ -573,6 +574,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						case ')':
 							scimoz.charRight();
 							scimoz.deleteBackNotLine();
+							break;
+						default:
+							scimoz.charLeft();
 							break;
 					}
 				}
