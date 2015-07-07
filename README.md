@@ -1,4 +1,4 @@
-Less 2.5.0 Compiler for Komodo Edit/Ide
+Less Compiler for Komodo Edit/Ide
 =========================
 
 a LESS 2.5.0 compiler for Komodo Edit/Ide.  
