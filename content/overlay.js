@@ -462,7 +462,12 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	
 	this._cleanUp = function() {
 		if (prefs.getBoolPref('useFilewatcher')) {
-			self.disableFileWatcher();
+			setTimeout(function(){
+				var remove_fw = confirm("Remove filewatcher");
+				if (remove_fw == true) {
+					self.disableFileWatcher();	
+				}
+			}, 1000);
 		}
 	}
 	
