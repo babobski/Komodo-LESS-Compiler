@@ -140,7 +140,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			text = scimoz.selText,
 			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
-			fileContent = d.buffer,
 			base = file.baseName,
 			path = (file) ? file.URI : null;
 			
@@ -149,7 +148,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				self._notifcation('Compiling LESS selection');
 			}
 		
-			outputLess = self._proces_less(path, base, fileContent);
+			outputLess = self._proces_less(path, base, text);
 		
 			less.render(outputLess, {compress: compress})
 			.then(function(output) {
