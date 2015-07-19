@@ -552,6 +552,24 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				}
 			}
 			
+			//trigger on :
+			if (e.shiftKey && e.charCode == 58 || e.shiftKey && e.charCode == 59 ) {
+				var  d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
+				file = d.file,
+				buffer = d.buffer;
+				
+				if (file.ext == '.less') {
+						var testString = buffer.substring((scimoz.currentPos - 14), scimoz.currentPos);
+						if (/@[a-z0-9-_]+$/i.test(testString)) {
+							e.preventDefault();
+							e.stopPropagation();
+							scimoz.insertText(scimoz.currentPos, ':');
+							scimoz.charRight();
+							scimoz.autoCCancel();	
+						}
+				}
+			}
+			
 			this.removeWhiteSpace = function () {
 				var current_line = scimoz.lineFromPosition(scimoz.currentPos);
 				scimoz.charLeft();
