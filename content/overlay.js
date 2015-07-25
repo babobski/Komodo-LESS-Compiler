@@ -137,7 +137,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			if (prefs.getBoolPref('showMessages')) {
 				self._log( error, konsole.S_ERROR);
 			} else {
-				this._notifcation(error, true);
+				self._notifcation(error, true);
 			}
 		});	
 	};
@@ -547,7 +547,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						scimoz.charRight();
 						setTimeout(function(){
 							scimoz.autoCShow(1, defaultcompletion.join(sep));
-						}, 200);	
+						}, 100);	
 					} else {
 						if (typeof completions !== 'undefined' && completions.length > 0) {
 							completions = completions.sort();
@@ -563,7 +563,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						setTimeout(function(){
 							scimoz.autoCShow(1, completions.join(sep));
 							inserted = true;
-						}, 200);
+						}, 100);
 					}
 				}
 			}
