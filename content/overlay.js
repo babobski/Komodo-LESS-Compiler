@@ -55,7 +55,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			
 			if (getVars) {
 				self._log('Getting LESS vars', konsole.S_LESS);
-				if (prefs.getBoolPref('showMessages') == false) {
+				if (prefs.getBoolPref('showMessages') == false && prefs.getBoolPref('showNotVars')) {
 					self._notifcation('Getting LESS vars');
 				}
 			} else {
@@ -90,7 +90,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	
 					self._saveFile(newFilename, output.css);
 					self._log('File saved', konsole.S_OK)
-					if (prefs.getBoolPref('showMessages') == false) {
+					if (prefs.getBoolPref('showMessages') == false && prefs.getBoolPref('showNotSave')) {
 						self._notifcation('LESS File saved');
 					}
 				},

@@ -61,7 +61,7 @@ if (typeof(konsole) == 'undefined' || konsole.version == 'babobski-1.1') konsole
    * @type array [ [RGB Color, Bold, Italic], ... ]
    */
   styles : [
-    [0x000000, 0, 0], [0x000000, 1, 0], [0x00AE4A, 1, 0], [0x5B5B5B, 1, 0],
+    [0x4A4A4A, 0, 0], [0x4A4A4A, 1, 0], [0x00AE4A, 1, 0], [0x5B5B5B, 1, 0],
     [0xFFAA00, 1, 0], [0xF22E2E, 1, 0], [0x0055AA, 1, 0], [0x5B5B5B, 0, 0],
     [0x5B5B5B, 0, 0], [0x3E6099, 1, 0], [0xCf649A, 0, 0], [0xFFFF55, 0, 0],
     [0x5555FF, 0, 0], [0xFF55FF, 0, 0], [0x55FFFF, 0, 0], [0x000000, 1, 0]

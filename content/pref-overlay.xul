@@ -31,7 +31,7 @@
 		</html:h3>
 	
 		  <hbox align="center">
-			<checkbox id="showMessages" preference="pref_showMessages" label="Show console messages when saving files" />
+			<checkbox id="showMessages" preference="pref_showMessages" label="Enable debug mode" />
 		  </hbox>
 		  
 		<html:h3>
