@@ -3,26 +3,47 @@
 
 <prefwindow id="less-prefs"
      title="LESS Preferences"
+	 xmlns:html="http://www.w3.org/1999/xhtml"
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
+	
 	<prefpane id="less-pane" label="LESS Preferences">
-	  <preferences>
-		<preference id="pref_showMessages" name="extensions.less.showMessages" type="bool"/>
-		<preference id="pref_useFilewatcher" name="extensions.less.useFilewatcher" type="bool"/>
-		<preference id="pref_fileWatcher" name="extensions.less.fileWatcher" type="string"/>
-	  </preferences>
+		<html:h3>
+			Notification Settings
+		</html:h3>
+		<preferences>
+			<preference id="pref_showNotSave" name="extensions.less.showNotSave" type="bool"/>
+			<preference id="pref_showNotVars" name="extensions.less.showNotVars" type="bool"/>
+			<preference id="pref_showMessages" name="extensions.less.showMessages" type="bool"/>
+			<preference id="pref_useFilewatcher" name="extensions.less.useFilewatcher" type="bool"/>
+			<preference id="pref_fileWatcher" name="extensions.less.fileWatcher" type="string"/>
+		</preferences>
 	  
-
-	  <hbox align="center">
-		<checkbox id="showMessages" preference="pref_showMessages" label="Show console messages when saving files" />
-	  </hbox>
-	  
-	   <hbox align="center">
-		<checkbox id="useFilewatcher" preference="pref_useFilewatcher" label="Enable file watcher" />
-	  </hbox>
-	  
-	  <label control="fileWatcher" value="file watcher"/>
-		<textbox id="fileWatcher" preference="pref_fileWatcher"/>
+		<hbox align="center">
+			<checkbox id="showNotSave" preference="pref_showNotSave" label="Show notification on file save" />
+		</hbox>
+		   
+		<hbox align="center">
+			<checkbox id="showNotVars" preference="pref_showNotVars" label="Show notification on getting vars" />
+		</hbox> 
+		  
+		<html:h3>
+			Debug mode
+		</html:h3>
+	
+		  <hbox align="center">
+			<checkbox id="showMessages" preference="pref_showMessages" label="Show console messages when saving files" />
+		  </hbox>
+		  
+		<html:h3>
+			File watcher
+		</html:h3>
+		  
+		<hbox align="center">
+			<checkbox id="useFilewatcher" preference="pref_useFilewatcher" label="Enable file watcher" />
+		</hbox>
+		
+		<label control="fileWatcher" value="file watcher"/>
+			<textbox id="fileWatcher" preference="pref_fileWatcher"/>
 	</prefpane>
 
 </prefwindow>
