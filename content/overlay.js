@@ -12,11 +12,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 (function() {	
 	var self = this,
 		prefs = Components.classes["@mozilla.org/preferences-service;1"]
-        .getService(Components.interfaces.nsIPrefService).getBranch("extensions.less."),
-		showMessages =  prefs.getBoolPref('showMessages'),
-		showNotSave =  prefs.getBoolPref('showNotSave'),
-		showNotVars =  prefs.getBoolPref('showNotVars'),
-		fileWatcher =  prefs.getBoolPref('useFilewatcher');
+        .getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
 		
 	if (!('less' in ko)) ko.extensions = {}; 
 	var myExt = "lesscompiler@komodoeditide.com" ; 
@@ -59,14 +55,14 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			
 			if (getVars) {
 				self._log('Getting LESS vars', konsole.S_LESS);
-				if (showMessages == false) {
+				if (prefs.getBoolPref('showMessages') == false) {
 					self._notifcation('Getting LESS vars');
 				}
 			} else {
 				self._log('Compiling LESS file', konsole.S_LESS);
 			}
 			
-			if (fileWatcher) {
+			if (prefs.getBoolPref('useFilewatcher')) {
 				path = prefs.getCharPref('fileWatcher');
 				base = path.substr(path.lastIndexOf('/') + 1, path.lenght),
 				buffer = self._readFile(path, '')[0];
@@ -80,7 +76,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					self._log(lessData.vars, konsole.S_OK);
 				} else {
 					lessData.vars = [ "@No_vars_found" ];
-					if (showMessages) {
+					if (prefs.getBoolPref('showMessages')) {
 						self._log('No LESS vars found', konsole.S_ERROR);
 					} else {
 						self._notifcation('No LESS vars found', true);
@@ -94,12 +90,12 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	
 					self._saveFile(newFilename, output.css);
 					self._log('File saved', konsole.S_OK)
-					if (showMessages == false) {
+					if (prefs.getBoolPref('showMessages') == false) {
 						self._notifcation('LESS File saved');
 					}
 				},
 				function(error) {
-					if (showMessages) {
+					if (prefs.getBoolPref('showMessages')) {
 						self._log( error, konsole.S_ERROR);
 					} else {
 						self._notifcation(error, true);
@@ -125,7 +121,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			path = (file) ? file.URI : null;
 			
 		self._log('Compile LESS buffer', konsole.S_LESS);
-		if (showMessages == false) {
+		if (prefs.getBoolPref('showMessages') == false) {
 			self._notifcation('Compile LESS buffer');
 		}
 		
@@ -138,7 +134,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		},
 		function(error) {
 			
-			if (showMessages) {
+			if (prefs.getBoolPref('showMessages')) {
 				self._log( error, konsole.S_ERROR);
 			} else {
 				this._notifcation(error, true);
@@ -162,7 +158,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			path = (file) ? file.URI : null;
 			
 			self._log('Compiling LESS selection', konsole.S_LESS);
-			if (showMessages == false) {
+			if (prefs.getBoolPref('showMessages') == false) {
 				self._notifcation('Compiling LESS selection');
 			}
 		
@@ -175,7 +171,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				self._log('Compiled LESS selection', konsole.S_OK);
 			},
 			function(error) {
-				if (showMessages) {
+				if (prefs.getBoolPref('showMessages')) {
 					self._log( error, konsole.S_ERROR);
 				} else {
 					self._notifcation(error, true);
@@ -198,7 +194,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			
 
 		if (!file) {
-			if (showMessages) {
+			if (prefs.getBoolPref('showMessages')) {
 				self._log('Please save the file first', konsole.S_ERROR);
 			} else {
 				self._notifcation('Please save the file first', true);
@@ -208,17 +204,17 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		}
 		
 		if (file.ext == '.less') {
-			if (fileWatcher == false) {
+			if (prefs.getBoolPref('useFilewatcher') == false) {
 				prefs.setBoolPref('useFilewatcher', true);
 			}
 			
 			prefs.setCharPref('fileWatcher', path);
 			self._log('file watcher enabled', konsole.S_OK);
-			if (showMessages == false) {
+			if (prefs.getBoolPref('showMessages') == false) {
 				self._notifcation("file watcher enabled");
 			}
 		} else {
-			if (showMessages) {
+			if (prefs.getBoolPref('showMessages')) {
 				self._log('Please select a LESS file', konsole.S_ERROR);
 			} else {
 				self._notifcation('Please save the file first', true);
@@ -228,13 +224,13 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	}
 	
 	this.disableFileWatcher = function(){
-		if (fileWatcher) {
+		if (prefs.getBoolPref('useFilewatcher')) {
 			prefs.setBoolPref('useFilewatcher', false);
 		}
 		
 		prefs.setCharPref('fileWatcher', '');
 		self._log('file watcher disabled', konsole.S_OK);
-		if (showMessages == false) {
+		if (prefs.getBoolPref('showMessages') == false) {
 			self._notifcation("file watcher disabled");
 		}
 	}
@@ -418,7 +414,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			reader.close();
 			output[1] = newRoot;
 		} catch(e){
-			if (showMessages) {
+			if (prefs.getBoolPref('showMessages')) {
 				self._log('ERROR Reading file: ' + fileUrl, konsole.S_ERROR);
 			} else {
 				self._notifcation('ERROR Reading file: ' + fileUrl, true);
@@ -429,7 +425,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	}
 	
 	this._log = function(message, style) {
-		if (style == konsole.S_ERROR || showMessages) {
+		if (style == konsole.S_ERROR || prefs.getBoolPref('showMessages')) {
 			konsole.popup();
 			konsole.writeln('[LESS] ' + message, style);
 		}
@@ -498,7 +494,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	}
 	
 	this._cleanUp = function() {
-		if (fileWatcher) {
+		if (prefs.getBoolPref('useFilewatcher')) {
 			setTimeout(function(){
 				var remove_fw = confirm("Remove filewatcher");
 				if (remove_fw == true) {
@@ -529,7 +525,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				file = d.file;
 				
 				if (!file) {
-					if (showMessages) {
+					if (prefs.getBoolPref('showMessages')) {
 						self._log('Please save the file first', konsole.S_ERROR);
 					} else {
 						self._notifcation('Please save the file first', true);
@@ -554,9 +550,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						}, 200);	
 					} else {
 						if (typeof completions !== 'undefined' && completions.length > 0) {
-							completions = completions.sort( );
+							completions = completions.sort();
 						} else {
-							if (showMessages) {
+							if (prefs.getBoolPref('showMessages')) {
 								self._log("No vars set, going find some!", konsole.S_WARNING);
 							}
 							self.getVars();
