@@ -43,11 +43,13 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
 			buffer = d.buffer,
-			base = file.baseName,
+			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null;
 
 		if (!file) {
-			self._log('Please save the file first', konsole.S_ERROR);
+			if (! getVars) {
+				self._log('Please save the file first', konsole.S_ERROR);	
+			}
 			return;  
 		}
 		
@@ -117,8 +119,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
 			buffer = d.buffer,
-			base = file.baseName,
+			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null;
+			
 			
 		self._log('Compile LESS buffer', konsole.S_LESS);
 		if (prefs.getBoolPref('showMessages') == false) {
@@ -154,7 +157,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			text = scimoz.selText,
 			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
-			base = file.baseName,
+			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null;
 			
 			self._log('Compiling LESS selection', konsole.S_LESS);
