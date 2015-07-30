@@ -1,5 +1,3 @@
-// tools for common Komodo extension chores
-xtk.load('chrome://less/content/toolkit.js');
 // Komodo console in Output Window
 xtk.load('chrome://less/content/konsole.js');
 xtk.load('chrome://less/content/less/less.min.js');
