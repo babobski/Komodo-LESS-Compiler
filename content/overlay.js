@@ -25,6 +25,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			extensions.less._onKeyPress, true
 		);
 		
+		window.removeEventListener("komodo-post-startup", self._cleanUp, false);
+		
 		ko.views.manager.topView.removeEventListener(
 			'onload',
 			extensions.less._cleanUp(), true
@@ -462,13 +464,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	
 	this._cleanUp = function() {
 		if (prefs.getBoolPref('useFilewatcher')) {
-			setTimeout(function(){
-				
-				var remove_fw = confirm("Remove filewatcher");
-				if (remove_fw == true) {
-					self.disableFileWatcher();	
-				}
-			}, 1000);
+			var features = "chrome,titlebar,toolbar,centerscreen,modal";
+			window.openDialog('chrome://less/content/fileWatcher.xul', "removeFileWatcher", features, self);
 		}
 	}
 	
@@ -641,5 +638,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
 	}
 	
-	ko.views.manager.topView.addEventListener('onload', self._cleanUp(), true);
+	
+			 
+	window.addEventListener("komodo-ui-started", self._cleanUp, false);
 }).apply(extensions.less);
