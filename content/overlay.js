@@ -120,12 +120,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			path = (file) ? file.URI : null;
 			
 		if (!file || !path) {
-			if (! getVars) {
-				notify.send(
-					'LESS: Please save the file first',
-					'tools'
-				);	
-			}
+			notify.send(
+				'LESS: Please save the file first',
+				'tools'
+			);	
 			return;  
 		}
 		
@@ -163,12 +161,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			path = (file) ? file.URI : null;
 			
 			if (!file || !path) {
-				if (! getVars) {
-					notify.send(
-						'LESS: Please save the file first',
-						'tools'
-					);	
-				}
+				notify.send(
+					'LESS: Please save the file first',
+					'tools'
+				);	
 				return;  
 			}
 		
@@ -478,7 +474,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			var scimoz = ko.views.manager.currentView.scimoz;
 			var sep = String.fromCharCode(scimoz.autoCSeparator);
 			var completions = lessData.vars;
-			var defaultcompletion = ["@import", "@media", "@font-face", "@key-frame", "@-webkit-key-frames"];
+			var defaultcompletion = ["@import", "@media", "@font-face", "@page", "@charset", "@namespace", "@keyframes", "@-webkit-keyframes"];
 			
 			if (scimoz.autoCMaxHeight !== 10) {
 				scimoz.autoCMaxHeight = 10;
@@ -632,13 +628,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					scimoz.endUndoAction()
 				}
 				
-				
 			}
 		};
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
 	}
-	
-	
-			 
-	window.addEventListener("komodo-ui-started", self._cleanUp, false);
+	 
+	window.addEventListener("komodo-post-startup", self._cleanUp, false);
 }).apply(extensions.less);
