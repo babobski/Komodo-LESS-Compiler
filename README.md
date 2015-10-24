@@ -53,7 +53,7 @@ if (extensions.less) {
 
 <h2>@vars completion</h2>
 <p>This extension also includes a @var auto completion for a better LESS integration in Komodo.<br>
-This completion box is triggered when you type <code>@</code>, if you are at the start of the line a default box will be displayed with <code>@import, @media, @font-face, @key-frame, @-webkit-key-frame</code></p>
+This completion box is triggered when you type <code>@</code>, if you are at the start of the line a default box will be displayed with <code>@import, @media, @font-face, @key-frames, @page, @charset, @namespace, @-webkit-keyframes</code></p>
 <p>To set up the auto completion you will have to set 2 macro's the first one is to enable the completion, and the other to get the @vars from your document.<br>
 A known <b>bug</b> is that after insertion white space is added, i created a "fix" if you type <code>;</code> or <code>)</code> the white space is removed and if there is a additional <code>;</code> or <code>)</code> it will be removed (for or Emmet users).</p>
 <p>The following macro will trigger a custom auto completion box with LESS @vars (trigger after start up).  
