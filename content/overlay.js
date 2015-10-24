@@ -26,11 +26,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '1.3.
 		);
 		
 		window.removeEventListener("komodo-post-startup", self._cleanUp, false);
-		
-		ko.views.manager.topView.removeEventListener(
-			'onload',
-			extensions.less._cleanUp(), true
-		);
 	}
 	
 	
