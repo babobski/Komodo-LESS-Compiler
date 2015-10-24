@@ -11,28 +11,9 @@
 			Notification Settings
 		</html:h3>
 		<preferences>
-			<preference id="pref_showNotSave" name="extensions.less.showNotSave" type="bool"/>
-			<preference id="pref_showNotVars" name="extensions.less.showNotVars" type="bool"/>
-			<preference id="pref_showMessages" name="extensions.less.showMessages" type="bool"/>
 			<preference id="pref_useFilewatcher" name="extensions.less.useFilewatcher" type="bool"/>
 			<preference id="pref_fileWatcher" name="extensions.less.fileWatcher" type="string"/>
 		</preferences>
-	  
-		<hbox align="center">
-			<checkbox id="showNotSave" preference="pref_showNotSave" label="Show notification on file save" />
-		</hbox>
-		   
-		<hbox align="center">
-			<checkbox id="showNotVars" preference="pref_showNotVars" label="Show notification on getting vars" />
-		</hbox> 
-		  
-		<html:h3>
-			Debug mode
-		</html:h3>
-	
-		  <hbox align="center">
-			<checkbox id="showMessages" preference="pref_showMessages" label="Enable debug mode" />
-		  </hbox>
 		  
 		<html:h3>
 			File watcher

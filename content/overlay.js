@@ -1,5 +1,4 @@
 // Komodo console in Output Window
-xtk.load('chrome://less/content/konsole.js');
 xtk.load('chrome://less/content/less/less.min.js');
 
 /**
@@ -7,9 +6,10 @@ xtk.load('chrome://less/content/less/less.min.js');
  */
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.0' };
-(function() {	
-	var self = this,
-		prefs = Components.classes["@mozilla.org/preferences-service;1"]
+(function() {
+	var notify	= require("notify/notify"),
+		self 	= this,
+		prefs 	= Components.classes["@mozilla.org/preferences-service;1"]
         .getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
 		
 	if (!('less' in ko)) ko.extensions = {}; 
@@ -44,23 +44,23 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null;
 
-		if (!file) {
+		if (!file || !path) {
 			if (! getVars) {
-				self._log('Please save the file first', konsole.S_ERROR);	
+				notify.send(
+					'LESS: Please save the file first',
+					'tools'
+				);	
 			}
 			return;  
 		}
 		
 		if (file.ext == '.less') {
-			
 			if (getVars) {
-				self._log('Getting LESS vars', konsole.S_LESS);
-				if (prefs.getBoolPref('showMessages') == false && prefs.getBoolPref('showNotVars')) {
-					self._notifcation('Getting LESS vars');
-				}
-			} else {
-				self._log('Compiling LESS file', konsole.S_LESS);
-			}
+				notify.send(
+					'LESS: Getting LESS vars',
+					'tools'
+				);	
+			} 
 			
 			if (prefs.getBoolPref('useFilewatcher')) {
 				path = prefs.getCharPref('fileWatcher');
@@ -73,14 +73,12 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				var allVars = self._getVars(outputLess);
 				lessData.vars = allVars;
 				if (lessData.vars !== undefined) {
-					self._log(lessData.vars, konsole.S_OK);
 				} else {
 					lessData.vars = [ "@No_vars_found" ];
-					if (prefs.getBoolPref('showMessages')) {
-						self._log('No LESS vars found', konsole.S_ERROR);
-					} else {
-						self._notifcation('No LESS vars found', true);
-					}
+					notify.send(
+						'LESS: No LESS vars found',
+						'tools'
+					);	
 				}
 				
 			} else {
@@ -89,17 +87,16 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					var newFilename = path.replace('.less', '.css');
 	
 					self._saveFile(newFilename, output.css);
-					self._log('File saved', konsole.S_OK)
-					if (prefs.getBoolPref('showMessages') == false && prefs.getBoolPref('showNotSave')) {
-						self._notifcation('LESS File saved');
-					}
+					notify.send(
+						'LESS: File saved',
+						'tools'
+					);	
 				},
 				function(error) {
-					if (prefs.getBoolPref('showMessages')) {
-						self._log( error, konsole.S_ERROR);
-					} else {
-						self._notifcation(error, true);
-					}
+					notify.send(
+						'LESS ERROR: ' + error,
+						'tools'
+					);	
 				});	
 			}
 		} else {
@@ -120,10 +117,14 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null;
 			
-			
-		self._log('Compile LESS buffer', konsole.S_LESS);
-		if (prefs.getBoolPref('showMessages') == false) {
-			self._notifcation('Compile LESS buffer');
+		if (!file || !path) {
+			if (! getVars) {
+				notify.send(
+					'LESS: Please save the file first',
+					'tools'
+				);	
+			}
+			return;  
 		}
 		
 		outputLess = self._proces_less(path, base, buffer);
@@ -131,15 +132,16 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		less.render(outputLess, {compress: compress})
 		.then(function(output) {
 			d.buffer = output.css;
-			self._log('Compiled LESS buffer', konsole.S_OK);
+			notify.send(
+				'LESS: Compiled LESS buffer',
+				'tools'
+			);	
 		},
 		function(error) {
-			
-			if (prefs.getBoolPref('showMessages')) {
-				self._log( error, konsole.S_ERROR);
-			} else {
-				self._notifcation(error, true);
-			}
+			notify.send(
+				'LESS ERROR: ' + error,
+				'tools'
+			);
 		});	
 	};
 
@@ -158,9 +160,14 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null;
 			
-			self._log('Compiling LESS selection', konsole.S_LESS);
-			if (prefs.getBoolPref('showMessages') == false) {
-				self._notifcation('Compiling LESS selection');
+			if (!file || !path) {
+				if (! getVars) {
+					notify.send(
+						'LESS: Please save the file first',
+						'tools'
+					);	
+				}
+				return;  
 			}
 		
 			outputLess = self._proces_less(path, base, text);
@@ -169,14 +176,16 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			.then(function(output) {
 				var css = output.css;
 				scimoz.replaceSel(css);
-				self._log('Compiled LESS selection', konsole.S_OK);
+				notify.send(
+				'LESS: Compiled LESS selection',
+					'tools'
+				);
 			},
 			function(error) {
-				if (prefs.getBoolPref('showMessages')) {
-					self._log( error, konsole.S_ERROR);
-				} else {
-					self._notifcation(error, true);
-				}
+				notify.send(
+					'LESS ERROR: ' + error,
+					'tools'
+				);
 			});
 	};
 
@@ -195,12 +204,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			
 
 		if (!file) {
-			if (prefs.getBoolPref('showMessages')) {
-				self._log('Please save the file first', konsole.S_ERROR);
-			} else {
-				self._notifcation('Please save the file first', true);
-			}
-			
+			notify.send(
+			'LESS: Please save the file first',
+				'tools'
+			);
 			return;  
 		}
 		
@@ -210,16 +217,15 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			}
 			
 			prefs.setCharPref('fileWatcher', path);
-			self._log('file watcher enabled', konsole.S_OK);
-			if (prefs.getBoolPref('showMessages') == false) {
-				self._notifcation("file watcher enabled");
-			}
+			notify.send(
+			'LESS: file watcher enabled',
+				'tools'
+			);
 		} else {
-			if (prefs.getBoolPref('showMessages')) {
-				self._log('Please select a LESS file', konsole.S_ERROR);
-			} else {
-				self._notifcation('Please save the file first', true);
-			}
+			notify.send(
+			'LESS: Please select a LESS file',
+				'tools'
+			);
 			return;  
 		}
 	}
@@ -230,10 +236,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		}
 		
 		prefs.setCharPref('fileWatcher', '');
-		self._log('file watcher disabled', konsole.S_OK);
-		if (prefs.getBoolPref('showMessages') == false) {
-			self._notifcation("file watcher disabled");
-		}
+		notify.send(
+		'LESS: file watcher disabled',
+			'tools'
+		);
 	}
 	
 	this._process_imports = function(imports, rootPath) {
@@ -255,7 +261,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						if (fileName.match(nameHasDot) == null) {
 							fileName = fileName + '.less';
 						}
-						self._log('@import ' + fileName, konsole.S_CUSTOM);
 						newContent = self._readFile(rootPath,  fileName);
 						buffer = buffer + newContent[0];
 						
@@ -282,7 +287,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 								if (fileName.match(nameHasDot) == null) {
 									fileName = fileName + '.less';
 								}
-								self._log('@import ' + fileName, konsole.S_CUSTOM);
 								newContent = self._readFile(rootPath,  fileName);
 								buffer = buffer + newContent[0];
 								
@@ -298,7 +302,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 						case 'reference':
 						case 'multiple':
 						default:
-							self._log('@import (' + type + ') is not supported, file is treated as LESS' , konsole.S_WARNING);
+							notify.send(
+							'@import (' + type + ') is not supported, file is treated as LESS',
+								'tools'
+							);
 							if (value.match(matchValue) !== null) {
 								var xf = value.match(matchValue),
 								fileName = xf.toString().split(',')[1].replace(quotes, '');
@@ -356,7 +363,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	}
 
 	this._saveFile = function(filepath, filecontent) {
-		self._log('Saving file to ' + filepath, konsole.S_CUSTOM);
 
 		var file = Components
 			.classes["@activestate.com/koFileEx;1"]
@@ -415,53 +421,13 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			reader.close();
 			output[1] = newRoot;
 		} catch(e){
-			if (prefs.getBoolPref('showMessages')) {
-				self._log('ERROR Reading file: ' + fileUrl, konsole.S_ERROR);
-			} else {
-				self._notifcation('ERROR Reading file: ' + fileUrl, true);
-			}
+			notify.send(
+				'LESS ERROR: Reading file: ' + fileUrl,
+				'tools'
+			);
 		}
 		
 		return output;
-	}
-	
-	this._log = function(message, style) {
-		if (style == konsole.S_ERROR || prefs.getBoolPref('showMessages')) {
-			konsole.popup();
-			konsole.writeln('[LESS] ' + message, style);
-		}
-	};
-	
-	this._notifcation = function($message, error){
-		$message =$message || false;
-		error = error || false;
-		
-		var icon = error ? 'chrome://less/content/less-error-icon.png' : 'chrome://less/content/less-icon.png';
-		if (!("Notification" in window)) {
-		  alert("This browser does not support system notifications");
-		}
-	  
-		else if (Notification.permission === "granted") {
-		  var options = {
-			body: $message,
-			icon: icon
-		  }
-		  var n = new Notification('LESS Compiler', options);
-		  setTimeout(n.close.bind(n), 5000); 
-		}
-	  
-		else if (Notification.permission !== 'denied') {
-		  Notification.requestPermission(function (permission) {
-			if (permission === "granted") {
-				var options = {
-				   body: $message,
-				   icon: icon
-				 }
-				 var n = new Notification('LESS Compiler', options);
-				setTimeout(n.close.bind(n), 5000); 
-			}
-		  });
-		}
 	}
 	
 	this._getVars = function(buffer){
@@ -497,6 +463,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 	this._cleanUp = function() {
 		if (prefs.getBoolPref('useFilewatcher')) {
 			setTimeout(function(){
+				
 				var remove_fw = confirm("Remove filewatcher");
 				if (remove_fw == true) {
 					self.disableFileWatcher();	
@@ -526,11 +493,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 				file = d.file;
 				
 				if (!file) {
-					if (prefs.getBoolPref('showMessages')) {
-						self._log('Please save the file first', konsole.S_ERROR);
-					} else {
-						self._notifcation('Please save the file first', true);
-					}
+					notify.send(
+					'Please save the file first',
+						'tools'
+					);
 					return;  
 				}
 				
@@ -541,30 +507,36 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 					e.stopPropagation();
 					
 					defaultcompletion = defaultcompletion.sort();
-					scimoz.replaceSel('');
-					
-					if (currentLineStart < 3) {
-						scimoz.insertText(scimoz.currentPos, '@');
-						scimoz.charRight();
-						setTimeout(function(){
-							scimoz.autoCShow(1, defaultcompletion.join(sep));
-						}, 100);	
-					} else {
-						if (typeof completions !== 'undefined' && completions.length > 0) {
-							completions = completions.sort();
+					scimoz.beginUndoAction()
+					try {
+						scimoz.replaceSel('');
+						
+						if (currentLineStart < 3) {
+							scimoz.insertText(scimoz.currentPos, '@');
+							scimoz.charRight();
+							setTimeout(function(){
+								scimoz.autoCShow(1, defaultcompletion.join(sep));
+							}, 100);	
 						} else {
-							if (prefs.getBoolPref('showMessages')) {
-								self._log("No vars set, going find some!", konsole.S_WARNING);
+							if (typeof completions !== 'undefined' && completions.length > 0) {
+								completions = completions.sort();
+							} else {
+								notify.send(
+								'No vars set, going find some!',
+									'tools'
+								);
+								self.getVars();
+								return false;
 							}
-							self.getVars();
-							return false;
+							scimoz.insertText(scimoz.currentPos, '@');
+							scimoz.charRight();
+							setTimeout(function(){
+								scimoz.autoCShow(1, completions.join(sep));
+								inserted = true;
+							}, 100);
 						}
-						scimoz.insertText(scimoz.currentPos, '@');
-						scimoz.charRight();
-						setTimeout(function(){
-							scimoz.autoCShow(1, completions.join(sep));
-							inserted = true;
-						}, 100);
+					} finally {
+						scimoz.endUndoAction()
 					}
 				}
 			}
@@ -582,6 +554,17 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 		
 			//trigger on )
 			if (e.charCode == 41 && inserted == true) {
+				var  d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
+				file = d.file;
+				
+				if (file.ext == '.less') {
+					inserted = false;
+					this.removeWhiteSpace();
+				}
+			}
+			
+			//trigger on ,
+			if (e.charCode == 44 && inserted == true) {
 				var  d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 				file = d.file;
 				
@@ -610,37 +593,49 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.5.
 			}
 			
 			this.removeWhiteSpace = function () {
-				var current_line = scimoz.lineFromPosition(scimoz.currentPos);
-				scimoz.charLeft();
-				if (/\s/.test(scimoz.getWCharAt(scimoz.currentPos))) {
-					scimoz.charRight();
-					scimoz.deleteBackNotLine();
-					scimoz.charLeft();
-				} 
 				
-				if (/\s/.test(scimoz.getWCharAt(scimoz.currentPos))) {
-					this.removeWhiteSpace();
-				} else {
-					scimoz.charRight();
-					while (/[\t\s]/.test(scimoz.getWCharAt(scimoz.currentPos).toString()) && current_line == scimoz.lineFromPosition(scimoz.currentPos)) {
+				scimoz.beginUndoAction()
+				try {
+					var current_line = scimoz.lineFromPosition(scimoz.currentPos);
+					scimoz.charLeft();
+					if (/\s/.test(scimoz.getWCharAt(scimoz.currentPos))) {
 						scimoz.charRight();
 						scimoz.deleteBackNotLine();
-					}
+						scimoz.charLeft();
+					} 
 					
-					switch (scimoz.getWCharAt(scimoz.currentPos).toString()) {
-						case ';':
+					if (/\s/.test(scimoz.getWCharAt(scimoz.currentPos))) {
+						this.removeWhiteSpace();
+					} else {
+						scimoz.charRight();
+						while (/[\t\s]/.test(scimoz.getWCharAt(scimoz.currentPos).toString()) && current_line == scimoz.lineFromPosition(scimoz.currentPos)) {
 							scimoz.charRight();
 							scimoz.deleteBackNotLine();
-							break;
-						case ')':
-							scimoz.charRight();
-							scimoz.deleteBackNotLine();
-							break;
-						default:
-							scimoz.charLeft();
-							break;
+						}
+						
+						currentChar = scimoz.getWCharAt(scimoz.currentPos).toString();
+						switch (currentChar) {
+							case ';':
+								scimoz.charRight();
+								scimoz.deleteBackNotLine();
+								break;
+							case ')':
+								scimoz.charRight();
+								scimoz.deleteBackNotLine();
+								break;
+							case ',':
+								scimoz.charRight();
+								scimoz.deleteBackNotLine();
+								break;
+							default:
+								break;
+						}
 					}
+				} finally {
+					scimoz.endUndoAction()
 				}
+				
+				
 			}
 		};
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
