@@ -7,9 +7,6 @@
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
 	<prefpane id="less-pane" label="LESS Preferences">
-		<html:h3>
-			Notification Settings
-		</html:h3>
 		<preferences>
 			<preference id="pref_useFilewatcher" name="extensions.less.useFilewatcher" type="bool"/>
 			<preference id="pref_fileWatcher" name="extensions.less.fileWatcher" type="string"/>
