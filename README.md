@@ -11,17 +11,17 @@ and you can set up auto completion for your Less @vars.
 <ul>
 <li><strong><em>Compile Saved File into CSS</em></strong><br>
 takes a .less file and creates a .css file with the same name in the same spot as the .less file.</li>
-<li><strong><em>Compile Current Buffer</em></strong><br>
+<li><strong><em>Compile Current Buffer <small>(including @imports)</small></em></strong><br>
 into CSS takes the contents of the current buffer and turns it into CSS.</li>
-<li><strong><em>Compile Selection into CSS</em></strong><br> 
+<li><strong><em>Compile Selection into CSS <small>(including @imports)</small></em></strong><br> 
 takes the current selection and turns it into CSS.</li>
 <li><strong><em>Compile and Compress Saved File into CSS</em></strong><br>
 takes a .less file and creates a .css file with the same name in the same spot as the .less file. The .less file will be compressed/minified.</li>
-<li><strong><em>Compile and Compress Current Buffer</em></strong><br>
+<li><strong><em>Compile and Compress Current Buffer <small>(including @imports)</small></em></strong><br>
 into CSS takes the contents of the current buffer and turns it into compressed CSS.</li>
-<li><strong><em>Compile and Compress Selection into CSS</em></strong><br> 
+<li><strong><em>Compile and Compress Selection into CSS <small>(including @imports)</small></em></strong><br> 
 takes the current selection and turns it into compressed CSS.</li>
-<li><strong><em>Collect @vars</em></strong><br> 
+<li><strong><em>Collect @vars <small>(including @imports)</small></em></strong><br> 
 collect all the LESS @vars for auto completion.</li>
 <li><strong>File Watcher</strong><ul>
 <li>
