@@ -616,6 +616,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '1.3.
 								scimoz.deleteBackNotLine();
 								break;
 							default:
+								scimoz.charLeft();
 								break;
 						}
 					}
