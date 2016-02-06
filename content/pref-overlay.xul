@@ -3,25 +3,57 @@
 
 <prefwindow id="less-prefs"
      title="LESS Preferences"
+	 width="300"
+	 height="340"
 	 xmlns:html="http://www.w3.org/1999/xhtml"
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
 	<prefpane id="less-pane" label="LESS Preferences">
 		<preferences>
-			<preference id="pref_useFilewatcher" name="extensions.less.useFilewatcher" type="bool"/>
-			<preference id="pref_fileWatcher" name="extensions.less.fileWatcher" type="string"/>
+			<preference id="pref_tooltipY" name="extensions.less.tooltipY" type="int"/>
+			<preference id="pref_compile" name="extensions.less.compilerEnabled" type="bool"/>
+			<preference id="pref_compress" name="extensions.less.compressFile" type="bool"/>
 		</preferences>
+		
+		<!--<image maxheight="64" maxwidth="252" src="chrome://less/content/less-icon.png" />-->
+		
+		<html:h3>
+			On file save
+		</html:h3>
+		<checkbox id="compile-file" preference="pref_compile" checked="true" label="Compile file"/>
+		
+		<checkbox id="compress-file" preference="pref_compress" checked="true" label="Compress file"/>
 		  
 		<html:h3>
-			File watcher
+			Advandced Settings
 		</html:h3>
-		  
-		<hbox align="center">
-			<checkbox id="useFilewatcher" preference="pref_useFilewatcher" label="Enable file watcher" />
-		</hbox>
 		
-		<label control="fileWatcher" value="file watcher"/>
-			<textbox id="fileWatcher" preference="pref_fileWatcher"/>
+		<label value="Calibrate tooltip vertical position" />
+		<menulist id="tooltipY" preference="pref_tooltipY" label="Calibrate tooltip vertical position">
+			<menupopup>
+				<menuitem value="-5" label="10"/>
+				<menuitem value="-4" label="9"/>
+				<menuitem value="-3" label="8"/>
+				<menuitem value="-2" label="7"/>
+				<menuitem value="-1" label="6"/>
+				<menuitem value="0" label="5"/>
+				<menuitem value="1" label="4"/>
+				<menuitem value="2" label="3"/>
+				<menuitem value="3" label="2"/>
+				<menuitem value="4" label="1"/>
+				<menuitem value="5" label="0"/>
+				<menuitem value="6" label="-1"/>
+				<menuitem value="7" label="-2"/>
+				<menuitem value="8" label="-3"/>
+				<menuitem value="9" label="-4"/>
+				<menuitem value="10" label="-5"/>
+				<menuitem value="11" label="-6"/>
+				<menuitem value="12" label="-7"/>
+				<menuitem value="13" label="-8"/>
+				<menuitem value="14" label="-9"/>
+				<menuitem value="15" label="-10"/>
+			</menupopup>
+		</menulist>
 	</prefpane>
 
 </prefwindow>

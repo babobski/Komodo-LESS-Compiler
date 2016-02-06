@@ -1,3 +1,6 @@
 content less content/
 overlay chrome://komodo/content/komodo.xul chrome://less/content/overlay.xul
 #overlay chrome://komodo/content/pref/pref-html.xul chrome://less/content/pref-overlay.xul
+skin less classic/1.0 skin/
+component {F9D0DC24-B164-11E5-BF22-84041E5D46B0} components/less_autocomplete.js
+contract @mozilla.org/autocomplete/search;1?name=less-autocomplete {F9D0DC24-B164-11E5-BF22-84041E5D46B0}

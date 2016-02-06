@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://less/skin/less.css" type="text/css"?>
 <overlay id="less" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://less/content/overlay.js" />
 
@@ -12,6 +14,7 @@
 	  <command id="Tasks:LessEnableFileWatcher" oncommand="extensions.less.enableFileWatcher();"/>
 	  <command id="Tasks:LessDisableFileWatcher" oncommand="extensions.less.disableFileWatcher();"/>
 	  <command id="Tasks:LessCollectVars" oncommand="extensions.less.getVars();"/>
+	  <command id="Tasks:LessSettings" oncommand="extensions.less.OpenLessSettings();"/>
     </commandset>
 
     <menupopup id="popup_tools">
@@ -60,6 +63,10 @@
 				</menuitem>
 			</menupopup>
 		  </menu>
+		  <menuitem id="menu_less_settings"
+                  label="Less Settings"
+                  observes="Tasks:LessSettings"
+                  class="menu-iconic-wide" />
         </menupopup>
       </menu>
     </menupopup>
