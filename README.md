@@ -2,72 +2,65 @@ Less Compiler for Komodo Edit/Ide
 =========================
 
 a LESS 2.5.3 compiler for Komodo Edit/Ide.  
-Based on the old  [LESS](https://community.activestate.com/node/7416) compiler (with LESS version 1.2.1), its updated to work with the (latest) LESS 2.5.3 version.
-A bug with the @import is now fixed (is handled by the extension it self. A function to compile only one file while editing less files is added
-and you can set up auto completion for your Less @vars.
+This addon allows you to compile LESS files and will give auto completion on the LESS @vars.
 
-<h2>Usage</h2>
-<p>Goto to Tools -&gt; LESS and select an option.</p>
-<ul>
-<li><strong><em>Compile Saved File into CSS</em></strong><br>
-takes a .less file and creates a .css file with the same name in the same spot as the .less file.</li>
-<li><strong><em>Compile Current Buffer <small>(including @imports)</small></em></strong><br>
-into CSS takes the contents of the current buffer and turns it into CSS.</li>
-<li><strong><em>Compile Selection into CSS <small>(including @imports)</small></em></strong><br> 
-takes the current selection and turns it into CSS.</li>
-<li><strong><em>Compile and Compress Saved File into CSS</em></strong><br>
-takes a .less file and creates a .css file with the same name in the same spot as the .less file. The .less file will be compressed/minified.</li>
-<li><strong><em>Compile and Compress Current Buffer <small>(including @imports)</small></em></strong><br>
-into CSS takes the contents of the current buffer and turns it into compressed CSS.</li>
-<li><strong><em>Compile and Compress Selection into CSS <small>(including @imports)</small></em></strong><br> 
-takes the current selection and turns it into compressed CSS.</li>
-<li><strong><em>Collect @vars <small>(including @imports)</small></em></strong><br> 
-collect all the LESS @vars for auto completion.</li>
-<li><strong>File Watcher</strong><ul>
-<li>
-<strong>Enable File Watcher for current file</strong><br>
-Enables a file watcher for current LESS file
-</li>
-<li>
-<strong>disable File Watcher</strong><br>
-Disables the file watcher
-</li>
-</ul>
-</ul>
-<em>When you right-click on the file you get the same option list (LESS > options).</em>
+## Usage
+If you install this addon. default the compiler is enabled.  
+When you edit a LESS file the file will be compiled to a CSS file.  
+The addon lets you set up a *File Watcher* or multiple *File Scopes* so you can work with imports and multiple less files in one project or multiple open projects( max. 3 ).  
+There are also some options available trough the menu.
 
+### Menu options
+**Tools > LESS > ...**
+ * **Compile Saved File into CSS**  
+Takes a .less file and creates a .css file with the same name in the same spot as the .less file.
+ * **Compile Current Buffer (including imports)**  
+ into CSS. Takes the contents of the current buffer and turns it into CSS.
+ * **Compile Selection into CSS (including imports)**  
+Takes the current selection and turns it into CSS
+ * **Compile and Compress Saved File into CSS**  
+ Takes a .less file and creates a .css file with the same name in the same spot as the .less file. The .less file will be compressed/minified.
+ * **Compile and Compress Current Buffer (including imports)**  
+ into CSS. Takes the contents of the current buffer and turns it into compressed CSS.
+ * **Compile and Compress Selection into CSS (including imports)**  
+ takes the current selection and turns it into compressed CSS.
+ * **Collect @vars**  
+ collect all the LESS @vars for auto completion.
+ * **File Watcher**
+  * **Enable File Watcher for current file**  
+  Enables a file watcher for current LESS file 
+  * **disable File Watcher**  
+  Disables the file watcher
+ * **Less Settings**  
+ This will open the settings window.
+ 
+### Statusbar
+When editing Less files, a Less statusbar will be shown.  
+The statusbar well tell you, if the compiler is enabled/disabled, if a file watcher or file scope is active and it will show errors if present.  
+![Screensot](screenshot01.png)  
+Trough the statusbar you can easily configure the settings.
+#### Menu options
+ * **Disable Compiler**  
+ This will disable the compiler
+ * **Enable File Watcher**  
+ This will enable a file watcher for the current file, when you edit less file's only the "Watched file" will be compiled
+ * **File Scopes**  
+ This will open a window where you can set file scopes, so you can work with multiple output files in one project or work with multiple projects.
+ * **Settings**  
+ This will open the settings window.
 
-<h2>Macro's</h2>
-<p>You can create a macro that will automatically turn a .less file into CSS when you save. Use the following code and have it trigger After file save:</p>
-```javascript
-if (extensions.less) {
-	extensions.less.compileFile();
-}
-```
-<p>The following macro will compile and compress the css.</p>
-```javascript
-if (extensions.less) {
-	extensions.less.compileCompressFile();
-}
-```
+### Autocompletion
+This addon will provide you with LESS var auto completion.  
+The vars will be search automatically( on file open and after you pressed @ on save ).  
+You can also trigger the search true the menu.  
+When you type @ a auto completion box will be shown.  
+![Screenshot](Screenshot02.png)
 
-<h2>@vars completion</h2>
-<p>This extension also includes a @var auto completion for a better LESS integration in Komodo.<br>
-This completion box is triggered when you type <code>@</code>, if you are at the start of the line a default box will be displayed with <code>@import, @media, @font-face, @key-frames, @page, @charset, @namespace, @-webkit-keyframes</code></p>
-<p>To set up the auto completion you will have to set 2 macro's the first one is to enable the completion, and the other to get the @vars from your document.<br>
-A known <b>bug</b> is that after insertion white space is added, i created a "fix" if you type <code>;</code> or <code>)</code> the white space is removed and if there is a additional <code>;</code> or <code>)</code> it will be removed (for or Emmet users).</p>
-<p>The following macro will trigger a custom auto completion box with LESS @vars (trigger after start up).  
-</p>
+### File Scopes
+![screenshot](screenshot03.png)  
+In the file scopes window, you can setup up to 3 file scopes.  
+For each file scope you can set a output file( this file will be triggered if a less file is in the current scope ) and set up to 3 include folders.  
+If a LESS file is inside a file scope, the selected output file will be compiled on save.  
+This allows you to work with multiple file scopes in one project or allows to work with multiple open projects( komodo windows )
+ 
 
-```javascript
-if (extensions.less) {
-    extensions.less.varCompletion();
-}
- ```
- <p>The next macro is for getting the @vars form your document (current view or the file where the file watcher is enabled including @imports) (trigger on custom key binding, i use <kbd>Alt</kbd> + <kbd>g</kbd>)<br>
- if you working with LESS and you have not search for @vars and you trigger the completion (by typing @ not on the beginning of a line) the extension will search in the current document.</p>
- ```javascript
- if (extensions.less) {
-    extensions.less.getVars(); 
-}
-```
