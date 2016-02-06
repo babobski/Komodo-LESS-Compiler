@@ -1,5 +1,5 @@
 if (typeof(extensions) === 'undefined') extensions = {};
-if (typeof(extensions.less) === 'undefined') extensions.less = { version : '1.3.1' };
+if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0' };
 
 (function() {
 	var	self 		= window.arguments[0],
