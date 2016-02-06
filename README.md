@@ -39,7 +39,7 @@ When editing Less files, a Less statusbar will be shown.
 The statusbar well tell you, if the compiler is enabled/disabled, if a file watcher or file scope is active and it will show errors if present.  
 ![Screensot](screenshot01.png)  
 Trough the statusbar you can easily configure the settings.
-#### Menu options
+#### Statusbar options
  * **Disable Compiler**  
  This will disable the compiler
  * **Enable File Watcher**  
@@ -52,7 +52,7 @@ Trough the statusbar you can easily configure the settings.
 ### Autocompletion
 This addon will provide you with LESS var auto completion.  
 The vars will be search automatically( on file open and after you pressed @ on save ).  
-You can also trigger the search true the menu.  
+You can also trigger the search trough the menu.  
 When you type @ a auto completion box will be shown.  
 ![Screenshot](Screenshot02.png)
 
@@ -60,7 +60,7 @@ When you type @ a auto completion box will be shown.
 ![screenshot](screenshot03.png)  
 In the file scopes window, you can setup up to 3 file scopes.  
 For each file scope you can set a output file( this file will be triggered if a less file is in the current scope ) and set up to 3 include folders.  
-If a LESS file is inside a file scope, the selected output file will be compiled on save.  
+If a LESS file is inside(recursively) a file scope, the selected output file will be compiled on save.
 This allows you to work with multiple file scopes in one project or allows to work with multiple open projects( komodo windows )
  
 
