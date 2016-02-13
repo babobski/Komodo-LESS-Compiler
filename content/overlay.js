@@ -4,7 +4,7 @@ xtk.load('chrome://less/content/less/less.min.js');
  * Namespaces
  */
 if (typeof(extensions) === 'undefined') extensions = {};
-if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0' };
+if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0.1' };
 (function() {
 	var notify	= require("notify/notify"),
 		$       = require("ko/dom"),
@@ -328,11 +328,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0'
 		return buffer;
 	}
 	
-	this._getFileScopePath = function(path){
-		
-		
-	}
-	
 	this.enableFileWatcher = function(){
 		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			file = d.file,
@@ -645,7 +640,15 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0'
 	}
 	
 	this._cleanUp = function() {
-		if (prefs.getBoolPref('useFilewatcher')) {
+		
+		if (prefs.getBoolPref('showWarning')) {
+			var features = "chrome,titlebar,toolbar,centerscreen"; 
+			window.openDialog('chrome://less/content/upgradeWarning.xul', "lessWarning", features);
+			
+			prefs.setBoolPref('showWarning', false);
+		}
+		
+		if (prefs.getBoolPref('useFilewatcher') && !prefs.getBoolPref('useFileScopes')) {
 			notify.send(
 			'LESS: File watcher is still enabled form last session or is enabled in a other window.',
 				'tools'
@@ -834,6 +837,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0'
 						path 	= outputfile01;
 					} else if (displayPath.indexOf(parser.displayPath(includeLess01Folder03)) !== -1) {
 						path 	= outputfile01;
+					} else if (displayPath.indexOf(parser.displayPath(outputfile01)) !== -1) {
+						path	= outputfile01;
 					}
 				}
 				
@@ -844,6 +849,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0'
 						path 	= outputfile02;
 					} else if (displayPath.indexOf(parser.displayPath(includeLess02Folder03)) !== -1) {
 						path 	= outputfile02;
+					} else if (displayPath.indexOf(parser.displayPath(outputfile02)) !== -1) {
+						path	= outputfile02;
 					}
 				}
 				
@@ -854,6 +861,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = { version : '2.0'
 						path 	= outputfile03;
 					} else if (displayPath.indexOf(parser.displayPath(includeLess03Folder03)) !== -1) {
 						path 	= outputfile03;
+					} else if (displayPath.indexOf(parser.displayPath(outputfile03)) !== -1) {
+						path	= outputfile03
 					}
 				}
 				

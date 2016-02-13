@@ -18,15 +18,12 @@
 			<preference id="pref_includeLess01Folder01" name="extensions.less.includeLess01Folder01" type="string"/>
 			<preference id="pref_includeLess01Folder02" name="extensions.less.includeLess01Folder02" type="string"/>
 			<preference id="pref_includeLess01Folder03" name="extensions.less.includeLess01Folder03" type="string"/>
-			<!--<preference id="pref_includeLess01Folder04" name="extensions.less.includeLess01Folder04" type="string"/>-->
 			<preference id="pref_includeLess02Folder01" name="extensions.less.includeLess02Folder01" type="string"/>
 			<preference id="pref_includeLess02Folder02" name="extensions.less.includeLess02Folder02" type="string"/>
 			<preference id="pref_includeLess02Folder03" name="extensions.less.includeLess02Folder03" type="string"/>
-			<!--<preference id="pref_includeLess02Folder04" name="extensions.less.includeLess02Folder04" type="string"/>-->
 			<preference id="pref_includeLess03Folder01" name="extensions.less.includeLess03Folder01" type="string"/>
 			<preference id="pref_includeLess03Folder02" name="extensions.less.includeLess03Folder02" type="string"/>
 			<preference id="pref_includeLess03Folder03" name="extensions.less.includeLess03Folder03" type="string"/>
-			<!--<preference id="pref_includeLess03Folder04" name="extensions.less.includeLess03Folder04" type="string"/>-->
 		</preferences>
 		
 		<html:p id="error_block" style="display: none; color: #CD0100; font-size: 14px; text-transform: uppercase; font-weight: bold;">
@@ -69,12 +66,6 @@
                 <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
             </hbox>
             
-           <!-- <hbox flex="1">
-                <label control="includeLess01Folder04" value="Include LESS folder #04"/>
-                <textbox id="includeLess01Folder04" flex="1" preference="pref_includeLess01Folder04"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>-->
-			
 			<hbox style="margin-top: 3px;" flex="1">
 				<spacer flex="3"/>
 				<button flex="1" onclick="extensions.less._clearScope(this)" label="Clear Scope" />
@@ -115,12 +106,6 @@
                 <textbox id="includeLess02Folder03" flex="1" preference="pref_includeLess02Folder03"/>
                 <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
             </hbox>
-            
-           <!-- <hbox flex="1">
-                <label control="includeLess02Folder04" value="Include LESS folder #04"/>
-                <textbox id="includeLess02Folder04" flex="1" preference="pref_includeLess02Folder04"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>-->
 			
 			<hbox style="margin-top: 3px;" flex="1">
 				<spacer flex="3"/>
@@ -163,12 +148,6 @@
                 <textbox id="includeLess03Folder03" flex="1" preference="pref_includeLess03Folder03"/>
                 <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
             </hbox>
-            
-           <!-- <hbox flex="1">
-                <label control="includeLess03Folder04" value="Include LESS folder #04"/>
-                <textbox id="includeLess03Folder04" flex="1" preference="pref_includeLess03Folder04"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>-->
 			
 			<hbox style="margin-top: 3px;" flex="1">
 				<spacer flex="3"/>
