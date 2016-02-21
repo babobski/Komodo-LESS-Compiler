@@ -553,7 +553,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				fileName = output.fileName,
 				fileUrl = output.fileUrl;
 
-
 		} else {
 			var fileName = '';
 
@@ -582,7 +581,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				'LESS ERROR: Reading file: ' + fileUrl,
 				'tools'
 			);
-			self._updateStatusBar('LESS ERROR: Reading file: ' + e.message);
+			self._updateStatusBar('LESS ERROR: Reading file: ' + fileUrl);
 		}
 
 		return output;
