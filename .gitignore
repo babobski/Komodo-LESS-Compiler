@@ -14,7 +14,7 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-.komodoproject
+*.komodoproject
 
 # Windows shortcuts
 *.lnk
