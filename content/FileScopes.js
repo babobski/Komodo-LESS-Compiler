@@ -1,6 +1,6 @@
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '2.0'
+	version: '2.0.3'
 };
 
 (function() {
@@ -26,7 +26,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			buffer = d.buffer,
 			base = (file) ? file.baseName : null,
 			path = (file) ? file.URI : null
-		outputfile01 = pref.getCharPref('outputfile01'),
+			outputfile01 = pref.getCharPref('outputfile01'),
 			outputfile02 = pref.getCharPref('outputfile02'),
 			outputfile03 = pref.getCharPref('outputfile03'),
 			outputFiles = [];
@@ -51,7 +51,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 		try {
 			var parsedPath = ko.uriparse.displayPath(path);
-			var dir = parsedPath.substr(0, self._last_slash(parsedPath) + 1);
+			var dir = parsedPath.substr(0, scope._last_slash(parsedPath) + 1);
 			var oldValue = input.value;
 
 			if (scope.isRemote(dir)) {
@@ -195,7 +195,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 		try {
 			var parsedPath = ko.uriparse.displayPath(path);
-			var dir = parsedPath.substr(0, self._last_slash(parsedPath) + 1);
+			var dir = parsedPath.substr(0, scope._last_slash(parsedPath) + 1);
 			var oldValue = input.value;
 
 			if (scope.isRemote(dir)) {
