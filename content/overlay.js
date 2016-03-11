@@ -5,7 +5,7 @@ xtk.load('chrome://less/content/less/less.min.js');
  */
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '2.0.3'
+	version: '2.0.4'
 };
 (function() {
 	var notify = require("notify/notify"),
@@ -401,6 +401,24 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			'tools'
 		);
 	}
+	
+	this.enableFilescopes = function() {
+		prefs.setBoolPref('useFileScopes', true);
+		self._updateStatusBar();
+		notify.send(
+			'LESS: File scopes Enabled',
+			'tools'
+		);
+	}
+
+	this.disableFileScopes = function() {
+		prefs.setBoolPref('useFileScopes', false);
+		self._updateStatusBar();
+		notify.send(
+			'LESS: File scopes disabled',
+			'tools'
+		);
+	}
 
 	this._process_imports = function(imports, rootPath) {
 
@@ -549,7 +567,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		//figure out ftp path if ../ in path
 		if (filepath.search(backPatern) !== -1) {
 
-			var output = self._parse_backDirectories(fullUrl, root, filepath),
+			var output = self._parse_backDirectories(fullUrl, filepath, root),
 				fileName = output.fileName,
 				fileUrl = output.fileUrl;
 
@@ -635,23 +653,22 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		return false;
 	}
 
-	this._parse_backDirectories = function(fullUrl, root, filepath) {
+	this._parse_backDirectories = function(fullUrl, filePath, root) {
 		var url = self._parse_uri(fullUrl),
-			urlParts = /\\/.test(root) ? root.split('\\') : root.split('/'),
-			backDirectories = url.match(/(\.\.\/|\.\.\\)/g).length,
-			fileName = filepath.toString().replace(/(\.\.\/|\.\.\\)+/, ''),
-			$index = parseFloat(root.match(/(\/|\\)/g).length) - parseFloat(backDirectories),
-			result = '',
-			slash = /\\/.test(fullUrl) ? '\\' : '\/';
-
-		for (index = 0; index < $index; ++index) {
-			result = result + urlParts[index] + slash;
+			backDirectorys = filePath.match(/\.\.\//g),
+			fileName = url.substr(self._last_slash(url) + 1, url.length),
+			fileBase = filePath.replace(/\.\.\//g, '');
+			base = root;
+			
+		for (var x = 0; x < backDirectorys.length + 1; x++) {
+			base = base.substr(0, self._last_slash(base));
+			if (x === backDirectorys.length) {
+				base = base + '/';
+			}
 		}
-
-		fileUrl = result.toString() + fileName;
-
+		
 		return {
-			fileUrl: fileUrl,
+			fileUrl: base + fileBase,
 			fileName: fileName
 		};
 	}
@@ -938,6 +955,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				enableDisable = document.createElement('menuitem'),
 				fileWatcherItem = document.createElement('menuitem'),
 				settingsItem = document.createElement('menuitem'),
+				fileScopesEnable = document.createElement('menuitem'),
 				fileScopes = document.createElement('menuitem');
 
 			if (!compileEnabled) {
@@ -955,6 +973,14 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				fileWatcherItem.setAttribute('label', 'Enable File Watcher');
 				fileWatcherItem.setAttribute('oncommand', 'extensions.less.enableFileWatcher();');
 			}
+			
+			if (prefs.getBoolPref('useFileScopes')) {
+				fileScopesEnable.setAttribute('label', 'Disable File Scopes');
+				fileScopesEnable.setAttribute('oncommand', 'extensions.less.disableFileScopes();');
+			} else {
+				fileScopesEnable.setAttribute('label', 'Enable File Scopes');
+				fileScopesEnable.setAttribute('oncommand', 'extensions.less.enableFilescopes();');
+			}
 
 			fileScopes.setAttribute('label', 'File Scopes'),
 				fileScopes.setAttribute('oncommand', 'extensions.less.OpenLessFileScopes();');
@@ -964,6 +990,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 			menu.appendChild(enableDisable);
 			menu.appendChild(fileWatcherItem);
+			menu.appendChild(fileScopesEnable);
 			menu.appendChild(fileScopes);
 			menu.appendChild(settingsItem);
 

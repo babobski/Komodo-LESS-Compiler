@@ -1,6 +1,6 @@
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '2.0.3'
+	version: '2.0.4'
 };
 
 (function() {
