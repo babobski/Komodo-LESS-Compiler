@@ -2,7 +2,7 @@ Less Compiler for Komodo Edit/Ide
 =========================
 
 a LESS 2.6.1 compiler for Komodo Edit/Ide.  
-This addon allows you to compile LESS files and will give auto completion on the LESS @vars.
+This addon allows you to compile LESS files.
 
 ## Usage
 If you install this addon. default the compiler is enabled.  
@@ -24,8 +24,6 @@ Takes the current selection and turns it into CSS
  into CSS. Takes the contents of the current buffer and turns it into compressed CSS.
  * **Compile and Compress Selection into CSS (including imports)**  
  takes the current selection and turns it into compressed CSS.
- * **Collect @vars**  
- collect all the LESS @vars for auto completion.
  * **File Watcher**
   * **Enable File Watcher for current file**  
   Enables a file watcher for current LESS file 
@@ -48,13 +46,6 @@ Trough the statusbar you can easily configure the settings.
  This will open a window where you can set file scopes, so you can work with multiple output files in one project or work with multiple projects.
  * **Settings**  
  This will open the settings window.
-
-### Autocompletion
-This addon will provide you with LESS var auto completion.  
-The vars will be search automatically( on file open and after you pressed @ on save ).  
-You can also trigger the search trough the menu.  
-When you type @ a auto completion box will be shown.  
-![Screenshot](Screenshot02.png)
 
 ### File Scopes
 ![screenshot](screenshot03.png)  
