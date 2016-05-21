@@ -23,14 +23,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
 	var lessData = ko.extensions[myExt].myapp;
 
-	if (extensions.less && extensions.less.onKeyPress) {
-		ko.views.manager.topView.removeEventListener(
-			'keypress',
-			extensions.less._onKeyPress, true
-		);
-
+	if (extensions.less && self._StartUpAction) {
 		window.removeEventListener("komodo-post-startup", self._StartUpAction, false);
-		window.removeEventListener("view_opened", self.getVars, false);
 		window.removeEventListener("focus", self._focusAction, false);
 		window.removeEventListener("file_saved", self._AfterSafeAction, false);
 		window.removeEventListener("current_view_changed", self._updateView, false);
@@ -38,10 +32,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 
 
-	this.compileFile = function(showWarning, compress, getVars) {
+	this.compileFile = function(showWarning, compress) {
 		showWarning = showWarning || false;
 		compress = compress || false;
-		getVars = getVars || false;
 
 		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 			fileContent = self._getContent(d),
@@ -51,7 +44,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			path = fileContent.path,
 			compilerEnabled = prefs.getBoolPref('compilerEnabled');
 
-		if (!compilerEnabled && !getVars) {
+		if (!compilerEnabled) {
 			return;
 		}
 
@@ -60,48 +53,32 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		}
 
 		if (file.ext == '.less') {
-			if (getVars) {
-				notify.send(
-					'LESS: Getting LESS vars',
-					'tools'
-				);
-			}
 
 			outputLess = self._proces_less(path, base, buffer);
-			if (getVars) {
-				var allVars = self._getVars(outputLess);
-				lessData.vars = allVars;
-				if (lessData.vars !== undefined) { // TODO clean up
-				} else {
-					lessData.vars = '';
-					notify.send(
-						'LESS: No LESS vars found',
-						'tools'
-					);
-				}
+			
+			less.render(outputLess, {
+					compress: compress
+				})
+				.then(function(output) {
+						var newFilename = path.replace('.less', '.css');
 
-			} else {
-				less.render(outputLess, {
-						compress: compress
-					})
-					.then(function(output) {
-							var newFilename = path.replace('.less', '.css');
-
-							self._saveFile(newFilename, output.css);
-							notify.send(
-								'LESS: File saved',
-								'tools'
-							);
-							self._updateStatusBar();
-						},
-						function(error) {
-							notify.send(
-								'LESS ERROR: ' + error,
-								'tools'
-							);
-							self._updateStatusBar('LESS ERROR: ' + error);
-						});
-			}
+						self._saveFile(newFilename, output.css);
+						//notify.send(
+						//	'LESS: File saved',
+						//	'tools'
+						//);
+						self._notifcation('LESS: File saved');
+						self._updateStatusBar();
+					},
+					function(error) {
+						//notify.send(
+						//	'LESS ERROR: ' + error,
+						//	'tools'
+						//);
+						self._notifcation('LESS: File saved', true);
+						self._updateStatusBar('LESS ERROR: ' + error);
+					});
+			
 		} else {
 			return;
 		}
@@ -121,10 +98,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			path = (file) ? file.URI : null;
 
 		if (!file || !path) {
-			notify.send(
-				'LESS: Please save the file first',
-				'tools'
-			);
+			//notify.send(
+			//	'LESS: Please save the file first',
+			//	'tools'
+			//);
+			self._notifcation('LESS: Please save the file first', true);
 			return;
 		}
 
@@ -135,17 +113,19 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			})
 			.then(function(output) {
 					d.buffer = output.css;
-					notify.send(
-						'LESS: Compiled LESS buffer',
-						'tools'
-					);
+					//notify.send(
+					//	'LESS: Compiled LESS buffer',
+					//	'tools'
+					//);
+					self._notifcation('LESS: Compiled LESS buffer');
 					self._updateStatusBar();
 				},
 				function(error) {
-					notify.send(
-						'LESS ERROR: ' + error,
-						'tools'
-					);
+					//notify.send(
+					//	'LESS ERROR: ' + error,
+					//	'tools'
+					//);
+					self._notifcation('LESS ERROR: ' + error, true);
 					self._updateStatusBar('LESS ERROR: ' + error);
 				});
 	};
@@ -166,10 +146,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			path = (file) ? file.URI : null;
 
 		if (!file || !path) {
-			notify.send(
-				'LESS: Please save the file first',
-				'tools'
-			);
+			//notify.send(
+			//	'LESS: Please save the file first',
+			//	'tools'
+			//);
+			self._notifcation('LESS: Please save the file first', true);
 			return;
 		}
 
@@ -181,51 +162,25 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			.then(function(output) {
 					var css = output.css;
 					scimoz.replaceSel(css);
-					notify.send(
-						'LESS: Compiled LESS selection',
-						'tools'
-					);
+					//notify.send(
+					//	'LESS: Compiled LESS selection',
+					//	'tools'
+					//);
+					self._notifcation('LESS: Compiled LESS selection');
 					self._updateStatusBar();
 				},
 				function(error) {
-					notify.send(
-						'LESS ERROR: ' + error,
-						'tools'
-					);
+					//notify.send(
+					//	'LESS ERROR: ' + error,
+					//	'tools'
+					//);
+					self._notifcation('LESS ERROR: ' + error);
 					self._updateStatusBar('LESS ERROR: ' + error);
 				});
 	};
 
 	this.compileCompressSelection = function() {
 		this.compileSelection(true);
-	}
-
-	this.getVars = function(search) {
-		search = search || false;
-		var useFileWatcher = prefs.getBoolPref('useFilewatcher'),
-			fileWatcher = prefs.getCharPref('fileWatcher'),
-			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
-			file = d.file,
-			path = (file) ? file.URI : null;
-
-		if (!file) {
-			return false;
-		}
-
-		if (file.ext === '.less') {
-			if (useFileWatcher) {
-				var parser = ko.uriparse;
-				if (parser.displayPath(path) === parser.displayPath(fileWatcher)) {
-					self.compileFile(false, false, true);
-				} else if (search) {
-					//self._getVarsFromBuffer(); TODO only collect from current buffer
-					self.compileFile(false, false, true);
-				}
-			} else {
-				self.compileFile(false, false, true);
-			}
-		}
-		return false;
 	}
 
 	this._getContent = function(doc) {
@@ -343,10 +298,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 
 		if (!file) {
-			notify.send(
-				'LESS: Please save the file first',
-				'tools'
-			);
+			//notify.send(
+			//	'LESS: Please save the file first',
+			//	'tools'
+			//);
+			self._notifcation('LESS: Please save the file first', true);
 			return;
 		}
 
@@ -356,16 +312,18 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			}
 
 			prefs.setCharPref('fileWatcher', path);
-			notify.send(
-				'LESS: file watcher enabled',
-				'tools'
-			);
+			//notify.send(
+			//	'LESS: file watcher enabled',
+			//	'tools'
+			//);
+			self._notifcation('LESS: file watcher enabled');
 			self._updateStatusBar();
 		} else {
-			notify.send(
-				'LESS: Please select a LESS file',
-				'tools'
-			);
+			//notify.send(
+			//	'LESS: Please select a LESS file',
+			//	'tools'
+			//);
+			self._notifcation('LESS: Please select a LESS file', true);
 			self._updateStatusBar('LESS ERROR: ' + error);
 			return;
 		}
@@ -378,46 +336,51 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 		prefs.setCharPref('fileWatcher', '');
 		self._updateStatusBar();
-		notify.send(
-			'LESS: file watcher disabled',
-			'tools'
-		);
+		self._notifcation('LESS: file watcher disabled');
+		//notify.send(
+		//	'LESS: file watcher disabled',
+		//	'tools'
+		//);
 	}
 
 	this.enableCompiler = function() {
 		prefs.setBoolPref('compilerEnabled', true);
 		self._updateStatusBar();
-		notify.send(
-			'LESS: Compiler Enabled',
-			'tools'
-		);
+		//notify.send(
+		//	'LESS: Compiler Enabled',
+		//	'tools'
+		//);
+		self._notifcation('LESS: Compiler Enabled');
 	}
 
 	this.disableCompiler = function() {
 		prefs.setBoolPref('compilerEnabled', false);
 		self._updateStatusBar();
-		notify.send(
-			'LESS: Compiler disabled',
-			'tools'
-		);
+		//notify.send(
+		//	'LESS: Compiler disabled',
+		//	'tools'
+		//);
+		self._notifcation('LESS: Compiler disabled');
 	}
 	
 	this.enableFilescopes = function() {
 		prefs.setBoolPref('useFileScopes', true);
 		self._updateStatusBar();
-		notify.send(
-			'LESS: File scopes Enabled',
-			'tools'
-		);
+		//notify.send(
+		//	'LESS: File scopes Enabled',
+		//	'tools'
+		//);
+		self._notifcation('LESS: File scopes Enabled');
 	}
 
 	this.disableFileScopes = function() {
 		prefs.setBoolPref('useFileScopes', false);
 		self._updateStatusBar();
-		notify.send(
-			'LESS: File scopes disabled',
-			'tools'
-		);
+		//notify.send(
+		//	'LESS: File scopes disabled',
+		//	'tools'
+		//);
+		self._notifcation('LESS: File scopes disabled');
 	}
 
 	this._process_imports = function(imports, rootPath) {
@@ -479,10 +442,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 						case 'inline':
 						case 'reference':
 						case 'multiple':
-							notify.send(
-								'@import (' + type + ') is not supported, file is treated as LESS',
-								'tools'
-							);
+							//notify.send(
+							//	'@import (' + type + ') is not supported, file is treated as LESS',
+							//	'tools'
+							//);
+							self._notifcation('@import (' + type + ') is not supported, file is treated as LESS');
 							if (value.match(matchValue) !== null) {
 								var xf = value.match(matchValue),
 									fileName = xf.toString().split(',')[1].replace(quotes, '');
@@ -595,62 +559,15 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			output[1] = newRoot;
 
 		} catch (e) {
-			notify.send(
-				'LESS ERROR: Reading file: ' + fileUrl,
-				'tools'
-			);
+			//notify.send(
+			//	'LESS ERROR: Reading file: ' + fileUrl,
+			//	'tools'
+			//);
+			self._notifcation('LESS ERROR: Reading file: ' + fileUrl, true);
 			self._updateStatusBar('LESS ERROR: Reading file: ' + fileUrl);
 		}
 
 		return output;
-	}
-
-	this._getVars = function(buffer) {
-		var bufferVars = '',
-			allVars,
-			output = [];
-
-		if (buffer.match(/@[a-z0-9_-]+:/i)) {
-			bufferVars = buffer.match(/@[a-z0-9_-]+:[^;,\r\n]+/gi);
-			allVars = bufferVars.toString().split(',');
-
-			allVars.forEach(function(value, i) {
-				var VarAndValues = value.split(':'),
-					val = VarAndValues[0],
-					comm = VarAndValues[1].replace(/^\s+/, '');
-				if (!self._in_array(val, output)) {
-					output.push({
-						"value": val,
-						"comment": comm
-					});
-				}
-			})
-
-			return JSON.stringify(output);
-		}
-
-	}
-
-	this._getVarsFromBuffer = function() {
-		d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
-			newVars = '',
-			oldVars = lessData.vars;
-
-		if (!d) {
-			return false;
-		}
-
-		if (d.buffer.length > 0) {
-			newVars = self._getVars(d.buffer);
-
-			if (newVars.length > 0) {
-				var allVars = oldVars.concat(newVars);
-				lessData.vars = JSON.stringify(allVars);
-			}
-
-		}
-
-		return false;
 	}
 
 	this._parse_backDirectories = function(fullUrl, filePath, root) {
@@ -701,152 +618,39 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 	this._cleanUp = function() {
 
-		if (prefs.getBoolPref('showWarning')) {
-			var features = "chrome,titlebar,toolbar,centerscreen";
-			window.openDialog('chrome://less/content/upgradeWarning.xul', "lessWarning", features);
-
-			prefs.setBoolPref('showWarning', false);
-		}
-
 		if (prefs.getBoolPref('useFilewatcher') && !prefs.getBoolPref('useFileScopes')) {
-			notify.send(
-				'LESS: File watcher is still enabled form last session or is enabled in a other window.',
-				'tools'
-			);
+			//notify.send(
+			//	'LESS: File watcher is still enabled form last session or is enabled in a other window.',
+			//	'tools'
+			//);
+			self._notifcation('LESS: File watcher is still enabled form last session or is enabled in a other window.');
 		}
 	}
-
-	this._checkForSearch = function() {
-		if (search) {
-			self.getVars(true);
-			search = false;
+	
+	this.addPanel = function(){
+		ko.views.manager.currentView.setFocus();
+		var view 	= $(require("ko/views").current().get()),
+		LESSpanel	= $("<statusbarpanel id='statusbar-less' />");
+		
+		if (view === undefined) {
+			return;
 		}
+		
+		view.findAnonymous("anonid", "statusbar-encoding").before(LESSpanel);
 	}
 
 	this._updateView = function() {
-		var wrapper = $('#less_wrapper');
-		if (wrapper.length > 0) {
-			wrapper.remove();
-		}
-
 		self._updateStatusBar();
 	}
 
-	this._calculateXpos = function() {
-		var currentWindowPos = editor.getCursorWindowPosition(),
-			windowX = +currentWindowPos['x'],
-			leftSidebarWith = +window.top.document.getElementById('workspace_left_area').clientWidth;
 
-		return windowX - leftSidebarWith;
-	}
-
-	this._calculateYpos = function() {
-		var currentWindowPos = editor.getCursorWindowPosition(),
-			windowY = +currentWindowPos['y'],
-			docH = +document.height,
-			adjustY = +prefs.getIntPref('tooltipY'),
-			leftH = +window.top.document.getElementById('workspace_left_area').clientHeight, //left pane
-			menuH = +window.top.document.getElementById('toolbox_main').clientHeight, // top menu
-			tabs = window.top.document.getElementById('tabbed-view')._tabs,
-			tabsH = +tabs.clientHeight, //tabs height
-			tabsT = +tabs.clientTop, //tabs ofsset top
-			preCalc = docH - leftH + 1,
-			topCalc = menuH + tabsH + preCalc + tabsT;
-
-		topCalc = topCalc + adjustY;
-
-
-		return windowY - topCalc;
-	}
-
-	insertLessVar = function() {
-		var scimoz = ko.views.manager.currentView.scimoz,
-			input = $('#less_auto');
-
-		if (input.length > 0) {
-			var val = input.value();
-
-			if (val.length > 0) {
-				scimoz.insertText(scimoz.currentPos, val);
-				scimoz.gotoPos(scimoz.currentPos + val.length);
-			}
-			input.parent().remove();
-			ko.views.manager.currentView.setFocus();
-		}
-	}
-
-	abortLessVarCompletion = function() {
-		var comp = $('#less_wrapper');
-
-		if (comp.length > 0) {
-			comp.remove();
-			ko.views.manager.currentView.setFocus();
-		}
-	}
-
-	blurLessComletion = function() {
-		clearLessCompletion = setTimeout(function() {
-			abortLessVarCompletion();
-		}, 1000);
-	}
-
-	focusLessCompletion = function() {
-		if (typeof clearLessCompletion !== 'undefined') {
-			clearTimeout(clearLessCompletion);
-		}
-	}
-
-	this._autocomplete = function() {
-		var completions = lessData.vars,
-			popup = document.getElementById('less_wrapper'),
-			autocomplete = document.createElement('textbox'),
-			x = self._calculateXpos(),
-			y = self._calculateYpos();
-
-		if (popup == null) {
-			popup = document.createElement('tooltip');
-			popup.setAttribute('id', 'less_wrapper');
-			autocomplete.setAttribute('id', 'less_auto');
-			autocomplete.setAttribute('type', 'autocomplete');
-			autocomplete.setAttribute('showcommentcolumn', 'true');
-			autocomplete.setAttribute('autocompletesearch', 'less-autocomplete');
-			autocomplete.setAttribute('highlightnonmatches', 'true');
-			autocomplete.setAttribute('ontextentered', 'insertLessVar()');
-			autocomplete.setAttribute('ontextreverted', 'abortLessVarCompletion()');
-			autocomplete.setAttribute('minresultsforpopup', '0');
-			autocomplete.setAttribute('onblur', 'blurLessComletion()');
-			autocomplete.setAttribute('onfocus', 'focusLessCompletion()');
-			popup.appendChild(autocomplete);
-
-			document.documentElement.appendChild(popup);
-		}
-
-		if (typeof completions === 'undefined') {
-			notify.send(
-				'No vars set, going find some!',
-				'tools'
-			);
-			self.getVars();
-			return false;
-		}
-
-
-		if (completions.length > 0) {
-			autocomplete.setAttribute('autocompletesearchparam', completions);
-			popup.openPopup(ko.views.manager.currentView, "after_pointer", x, y, false, false);
-			autocomplete.focus();
-			autocomplete.value = "@";
-			autocomplete.open = true;
-		}
-
-	}
 
 	this._updateStatusBar = function(message, error) {
 		message = message || false;
 		error = error || false;
 		var label = 'Compiler Enabled',
 			compileEnabled = prefs.getBoolPref('compilerEnabled'),
-			attachTo = $("#statusbar-encoding");
+			currV	= require("ko/views").current().get();
 
 		if (ko.views.manager.currentView == 'undefined') {
 			return false;
@@ -860,11 +664,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		}
 
 		if (file.ext === '.less') {
-			if ($("#statusbar-eol").length > 0) {
-				attachTo = $("#statusbar-eol");
-			}
 
 			$("#statusbar-less").remove();
+			self.addPanel();
 
 			if (prefs.getBoolPref('useFileScopes')) {
 				var path = 'Outside file scope',
@@ -944,13 +746,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			if (!compileEnabled) {
 				label = 'Compiler Disabled';
 			}
-
-			var statPanel = document.createElement('statusbarpanel');
-
-			statPanel.setAttribute('id', 'statusbar-less');
-			statPanel.setAttribute('tooltiptext', 'LESS Settings');
-
-			attachTo.before(statPanel);
+			
 			var menu = document.createElement('menupopup'),
 				enableDisable = document.createElement('menuitem'),
 				fileWatcherItem = document.createElement('menuitem'),
@@ -1005,6 +801,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			button.setAttribute('persist', 'buttonstyle');
 			button.setAttribute('buttonstyle', 'text');
 			button.setAttribute('label', label);
+			
+			if (panel.length === 0){
+				self.addPanel();
+				panel = document.getElementById('statusbar-less');
+			}
 
 			panel.appendChild(button);
 
@@ -1016,46 +817,39 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		}
 
 	}
-
-	this.varCompletion = function() {
-		var editor_pane = ko.views.manager.topView;
-
-		this._onKeyPress = function(e) {
-			var scimoz = ko.views.manager.currentView.scimoz;
-			if (e.shiftKey && e.charCode == 64) {
-				var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
-					file = d.file;
-
-				if (!file) {
-					notify.send(
-						'Please save the file first',
-						'tools'
-					);
-					return;
-				}
-
-				if (file.ext == '.less') {
-					var currentLine = scimoz.lineFromPosition(scimoz.currentPos),
-						currentLineStart = scimoz.lineLength(currentLine);
-
-					try {
-						if (currentLineStart > 3) {
-							e.preventDefault();
-							e.stopPropagation();
-							self._autocomplete();
-						} else {
-							search = true;
-						}
-					} catch (e) {
-
-					}
-				}
-			}
+	
+	this._notifcation = function($message, error){
+		$message =$message || false;
+		error = error || false;
+		
+		var icon = error ? 'chrome://less/content/less-error-icon.png' : 'chrome://less/content/less-icon.png';
+		if (!("Notification" in window)) {
+		  alert("This browser does not support system notifications");
 		}
-
-
-		editor_pane.addEventListener('keypress', self._onKeyPress, true);
+	  
+		else if (Notification.permission === "granted") {
+		  var options = {
+			body: $message,
+			icon: icon
+		  }
+		  var n = new Notification('LESS Compiler', options);
+		  setTimeout(n.close.bind(n), 5000); 
+		}
+	  
+		else if (Notification.permission !== 'denied') {
+		  Notification.requestPermission(function (permission) {
+			if (permission === "granted") {
+				var options = {
+				   body: $message,
+				   icon: icon
+				 }
+				 var n = new Notification('LESS Compiler', options);
+				setTimeout(n.close.bind(n), 5000); 
+			}
+		  });
+		}
 	}
+
 	var features = "chrome,titlebar,toolbar,centerscreen";
 	this.OpenLessSettings = function() {
 		window.openDialog('chrome://less/content/pref-overlay.xul', "lessSettings", features);
@@ -1073,13 +867,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	}
 
 	this._AfterSafeAction = function() {
-		self._checkForSearch();
 		self.compileFile(false, prefs.getBoolPref('compressFile'));
 	}
 
 	this._StartUpAction = function() {
 		self._cleanUp();
-		self.varCompletion();
 	}
 
 	this._focusAction = function() {
@@ -1087,7 +879,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	}
 
 	window.addEventListener("komodo-post-startup", self._StartUpAction, false);
-	window.addEventListener("view_opened", self.getVars, false);
 	window.addEventListener("focus", self._focusAction, false);
 	window.addEventListener("file_saved", self._AfterSafeAction, false);
 	window.addEventListener("current_view_changed", self._updateView, false);

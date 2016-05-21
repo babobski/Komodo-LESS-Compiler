@@ -1,28 +1,48 @@
-@black: #333;
-
-#less_wrapper {
-	background-color: @black;
-	border-color: @black;
-	padding: 0;
-	-moz-appearance: none;
-	#less_auto {
-		max-width: 270px;
-		width: 270px;
-		margin: 0;
-		padding: 0;
-	}
-}
+@import url("chrome://komodo/skin/global/colors.less");
+@import url("resource://profile/colors.less"); 
 
 #statusbar-less {
 	#statusbar-less-label {
 		min-width: 70px;
 		> label {
-			background-image: url('../content/komodo-less.png');
+			background-image: url('../content/komodo-less.png') !important;
 			background-repeat: no-repeat;
 			background-position: 0px 4px;
 			background-size: auto 11px;
-			padding-left: 30px; 
+			padding-left: 30px;
 			padding-right: 10px;
+		}
+	}
+}  
+ 
+prefwindow,
+prefwindow:root {
+  -moz-binding: url("chrome://global/content/bindings/preferences.xml#prefwindow");
+}
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > vbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > hbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > box {
+  padding: 10px;
+}
+prefwindow > prefpane {  
+  padding: 10px;
+}
+
+h3 {
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+prefwindow
+{
+    #less-filescopes-pane {
+		label {
+			padding: 3px;
+			font-weight: bold;
+		}
+		strong {
+			font-weight: bold;
+			font-size: 14px;
 		}
 	}
 }
