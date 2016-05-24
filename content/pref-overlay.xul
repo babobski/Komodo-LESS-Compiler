@@ -15,6 +15,7 @@
 			<preference id="pref_tooltipY" name="extensions.less.tooltipY" type="int"/>
 			<preference id="pref_compile" name="extensions.less.compilerEnabled" type="bool"/>
 			<preference id="pref_compress" name="extensions.less.compressFile" type="bool"/>
+			<preference id="pref_msgType" name="extensions.less.msgType" type="string"/>
 		</preferences>
 		
 		<!--<image maxheight="64" maxwidth="252" src="chrome://less/content/less-icon.png" />-->
@@ -29,6 +30,13 @@
 		<html:h3>
 			Advandced Settings
 		</html:h3>
+		<label value="Message Type" />
+		<menulist id="msgType" preference="pref_msgType" label="Message Type">
+			<menupopup>
+				<menuitem value="notify" label="Notify"/>
+				<menuitem value="web-notifications" label="Web Notifications"/>
+			</menupopup>
+		</menulist>
 		
 		<label value="Calibrate tooltip vertical position" />
 		<menulist id="tooltipY" preference="pref_tooltipY" label="Calibrate tooltip vertical position">

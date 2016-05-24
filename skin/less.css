@@ -5,6 +5,18 @@
 /* Widgets */
 /* SCC */
 /* Misc */
+#less_wrapper {
+  background-color: #333;
+  border-color: #333;
+  padding: 0;
+  -moz-appearance: none;
+}
+#less_wrapper #less_auto {
+  max-width: 270px;
+  width: 270px;
+  margin: 0;
+  padding: 0;
+}
 #statusbar-less #statusbar-less-label {
   min-width: 70px;
 }

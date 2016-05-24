@@ -1,5 +1,19 @@
 @import url("chrome://komodo/skin/global/colors.less");
 @import url("resource://profile/colors.less"); 
+@black: #333;
+
+#less_wrapper {
+	background-color: @black;
+	border-color: @black;
+	padding: 0;
+	-moz-appearance: none;
+	#less_auto {
+		max-width: 270px;
+		width: 270px;
+		margin: 0;
+		padding: 0;
+	}
+}
 
 #statusbar-less {
 	#statusbar-less-label {
