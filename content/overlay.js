@@ -363,10 +363,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	this.disableFileScopes = function() {
 		prefs.setBoolPref('useFileScopes', false);
 		self._updateStatusBar();
-		notify.send(
-			'LESS: File scopes disabled',
-			'tools'
-		);
 		self._notifcation('LESS: File scopes disabled');
 	}
 
@@ -798,8 +794,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		message = message || false;
 		error = error || false;
 		var label = 'Compiler Enabled',
-			compileEnabled = prefs.getBoolPref('compilerEnabled'),
-			attachTo = $("#statusbar-encoding");
+			compileEnabled = prefs.getBoolPref('compilerEnabled');
 
 		if (ko.views.manager.currentView == 'undefined') {
 			return false;
