@@ -17,7 +17,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		.getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
 
 
-	if (!('less' in ko)) ko.extensions = {};
+	if (!('extensions' in ko)) ko.extensions = {};
 	var myExt = "lesscompiler@komodoeditide.com";
 	if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
 	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
