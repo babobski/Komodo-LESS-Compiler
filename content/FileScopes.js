@@ -1,6 +1,6 @@
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '2.1.1'
+	version: '2.1.2'
 };
 
 (function() {
@@ -12,7 +12,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		overlay = self.overlay;
 
 
-	if (!('less' in ko)) ko.extensions = {};
+	if (!('extensions' in ko)) ko.extensions = {};
 	var myExt = "lesscompiler@komodoeditide.com";
 	if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
 	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
