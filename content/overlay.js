@@ -385,13 +385,18 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 						if (fileName.match(nameHasDot) == null) {
 							fileName = fileName + '.less';
 						}
-						newContent = self._readFile(rootPath, fileName);
-						buffer = buffer + newContent[0];
-
-						if (buffer.toString().match(matchImports) !== null) {
-							var cleanLess = self._strip_comments(buffer);
-							newImport = self._split_on_imports(cleanLess);
-							buffer = self._process_imports(newImport, newContent[1]);
+						
+						if (/\.css$/i.test(fileName)) {
+							buffer = buffer + value;
+						} else {
+							newContent = self._readFile(rootPath, fileName);
+							buffer = buffer + newContent[0];
+	
+							if (buffer.toString().match(matchImports) !== null) {
+								var cleanLess = self._strip_comments(buffer);
+								newImport = self._split_on_imports(cleanLess);
+								buffer = self._process_imports(newImport, newContent[1]);
+							}
 						}
 					}
 				}
