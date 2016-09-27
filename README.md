@@ -1,7 +1,7 @@
 Less Compiler for Komodo Edit/Ide
 =========================
 
-a LESS 2.6.1 compiler for Komodo Edit/Ide.  
+a LESS 2.7.1 compiler for Komodo Edit/Ide.  
 This addon allows you to compile LESS files and will give auto completion on the LESS @vars.
 
 ## Usage

@@ -5,7 +5,7 @@ xtk.load('chrome://less/content/less/less.min.js');
  */
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '2.1.3'
+	version: '2.1.4'
 };
 (function() {
 	var notify = require("notify/notify"),
