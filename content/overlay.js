@@ -17,7 +17,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		.getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
 
 
-	if (!('extensions' in ko)) ko.extensions = {};
+	if (!('extensions' in  ko)) ko.extensions = {};
 	var myExt = "lesscompiler@komodoeditide.com";
 	if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
 	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
@@ -43,8 +43,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		compress = compress || false;
 		getVars = getVars || false;
 
-		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
-			fileContent = self._getContent(d),
+		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc;
+		if (d === null) {
+			return false;
+		}
+		var	fileContent = self._getContent(d),
 			file = fileContent.file,
 			buffer = fileContent.buffer,
 			base = fileContent.base,
@@ -174,8 +177,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		search = search || false;
 		var useFileWatcher = prefs.getBoolPref('useFilewatcher'),
 			fileWatcher = prefs.getCharPref('fileWatcher'),
-			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
-			file = d.file,
+			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc;
+		if (d === null) {
+			return false;
+		}	
+		var	file = d.file,
 			path = (file) ? file.URI : null;
 
 		if (!file) {
@@ -386,7 +392,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 							fileName = fileName + '.less';
 						}
 						
-						if (/\.css$/i.test(fileName)) {
+						if (/\.css$/i.test(fileName) || /css\?family/.test(fileName)) {
 							buffer = buffer + value;
 						} else {
 							newContent = self._readFile(rootPath, fileName);
@@ -674,6 +680,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			return;
  		}
 		
+		if ($('#statusbar-less').length > 0) {
+			$('#statusbar-less').remove();
+		}
+		
 		view.findAnonymous("anonid", "statusbar-encoding").before(LESSpanel);
  	}
 
@@ -772,6 +782,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		var completions = lessData.vars,
 			popup = document.getElementById('less_wrapper'),
 			autocomplete = document.createElement('textbox'),
+			currentView = ko.views.manager.currentView,
 			x = self._calculateXpos(),
 			y = self._calculateYpos();
 
@@ -801,6 +812,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 
 		if (completions.length > 0) {
+			if (currentView.scintilla.autocomplete.active) {
+				currentView.scintilla.autocomplete.close();
+			}
 			autocomplete.setAttribute('autocompletesearchparam', completions);
 			popup.openPopup(ko.views.manager.currentView, "after_pointer", x, y, false, false);
 			autocomplete.focus();

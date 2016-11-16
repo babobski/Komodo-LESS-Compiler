@@ -4,11 +4,11 @@
 <?xml-stylesheet href="less://less/skin/less.less" type="text/css"?>
 
 <prefwindow id="less-prefs"
-     title="LESS Preferences"
+	 title="LESS Preferences"
 	 width="300"
 	 height="340"
 	 xmlns:html="http://www.w3.org/1999/xhtml"
-     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
 	<prefpane id="less-pane" label="LESS Preferences">
 		<preferences>
@@ -26,7 +26,7 @@
 		<checkbox id="compile-file" preference="pref_compile" checked="true" label="Compile file"/>
 		
 		<checkbox id="compress-file" preference="pref_compress" checked="true" label="Compress file"/>
-		  
+			
 		<html:h3>
 			Advandced Settings
 		</html:h3>
@@ -67,3 +67,4 @@
 	</prefpane>
 
 </prefwindow>
+

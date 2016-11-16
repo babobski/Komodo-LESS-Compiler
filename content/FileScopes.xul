@@ -4,11 +4,11 @@
 <?xml-stylesheet href="less://less/skin/less.less" type="text/css"?>
 
 <prefwindow id="less-filescope-prefs"
-     title="LESS File Scopes"
+	 title="LESS File Scopes"
 	 width="800"
 	 height="850"
 	 xmlns:html="http://www.w3.org/1999/xhtml"
-     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://less/content/FileScopes.js" />
 	
 	<prefpane id="less-filescopes-pane" label="LESS File Scopes">
@@ -38,82 +38,82 @@
 		</html:h3>
 		
 		<vbox flex="1" class="scope01">
-            <hbox flex="1">
-                <label control="outputfile01" value="Output File"/>
-                <textbox id="outputfile01" flex="1" preference="pref_outputfile01"/>
-                <button onclick="extensions.less._selectOutputFile(this)" label="Set Output File" />
-            </hbox>
-            
-            <html:p>
-                <html:strong>
-                    Include LESS folders
-                </html:strong>
-            </html:p>
-            
-            <hbox flex="1">
-                <label control="includeLess01Folder01" value="Include LESS folder #01"/>
-                <textbox id="includeLess01Folder01" flex="1" preference="pref_includeLess01Folder01"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
-            <hbox flex="1">
-                <label control="includeLess01Folder02" value="Include LESS folder #02"/>
-                <textbox id="includeLess01Folder02" flex="1" preference="pref_includeLess01Folder02"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
-            <hbox flex="1">
-                <label control="includeLess01Folder03" value="Include LESS folder #03"/>
-                <textbox id="includeLess01Folder03" flex="1" preference="pref_includeLess01Folder03"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
+			<hbox flex="1">
+				<label control="outputfile01" value="Output File"/>
+				<textbox id="outputfile01" flex="1" preference="pref_outputfile01"/>
+				<button onclick="extensions.less._selectOutputFile(this)" label="Set Output File" />
+			</hbox>
+			
+			<html:p>
+				<html:strong>
+					Include LESS folders
+				</html:strong>
+			</html:p>
+			
+			<hbox flex="1">
+				<label control="includeLess01Folder01" value="Include LESS folder #01"/>
+				<textbox id="includeLess01Folder01" flex="1" preference="pref_includeLess01Folder01"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
+			<hbox flex="1">
+				<label control="includeLess01Folder02" value="Include LESS folder #02"/>
+				<textbox id="includeLess01Folder02" flex="1" preference="pref_includeLess01Folder02"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
+			<hbox flex="1">
+				<label control="includeLess01Folder03" value="Include LESS folder #03"/>
+				<textbox id="includeLess01Folder03" flex="1" preference="pref_includeLess01Folder03"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
 			<hbox style="margin-top: 3px;" flex="1">
 				<spacer flex="3"/>
 				<button flex="1" onclick="extensions.less._clearScope(this)" label="Clear Scope" />
 			</hbox>
-        </vbox>
+		</vbox>
 		
 		<html:h3>
 			File Scope #02
 		</html:h3>
 		
 		<vbox flex="1" class="scope02">
-            <hbox flex="1">
-                <label control="outputfile02" value="Output File"/>
-                <textbox id="outputfile02" flex="1" preference="pref_outputfile02"/>
-                <button onclick="extensions.less._selectOutputFile(this)" label="Set Output File" />
-            </hbox>
-            
-            <html:p>
-                <html:strong>
-                    Include LESS folders
-                </html:strong>
-            </html:p>
-            
-            <hbox flex="1">
-                <label control="includeLess02Folder01" value="Include LESS folder #01"/>
-                <textbox id="includeLess02Folder01" flex="1" preference="pref_includeLess02Folder01"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
-            <hbox flex="1">
-                <label control="includeLess02Folder02" value="Include LESS folder #02"/>
-                <textbox id="includeLess02Folder02" flex="1" preference="pref_includeLess02Folder02"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
-            <hbox flex="1">
-                <label control="includeLess02Folder03" value="Include LESS folder #03"/>
-                <textbox id="includeLess02Folder03" flex="1" preference="pref_includeLess02Folder03"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
+			<hbox flex="1">
+				<label control="outputfile02" value="Output File"/>
+				<textbox id="outputfile02" flex="1" preference="pref_outputfile02"/>
+				<button onclick="extensions.less._selectOutputFile(this)" label="Set Output File" />
+			</hbox>
+			
+			<html:p>
+				<html:strong>
+					Include LESS folders
+				</html:strong>
+			</html:p>
+			
+			<hbox flex="1">
+				<label control="includeLess02Folder01" value="Include LESS folder #01"/>
+				<textbox id="includeLess02Folder01" flex="1" preference="pref_includeLess02Folder01"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
+			<hbox flex="1">
+				<label control="includeLess02Folder02" value="Include LESS folder #02"/>
+				<textbox id="includeLess02Folder02" flex="1" preference="pref_includeLess02Folder02"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
+			<hbox flex="1">
+				<label control="includeLess02Folder03" value="Include LESS folder #03"/>
+				<textbox id="includeLess02Folder03" flex="1" preference="pref_includeLess02Folder03"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
 			
 			<hbox style="margin-top: 3px;" flex="1">
 				<spacer flex="3"/>
 				<button flex="1" onclick="extensions.less._clearScope(this)" label="Clear Scope" />
 			</hbox>
-        </vbox>
+		</vbox>
 		
 		<html:h3>
 			File Scope #03
@@ -121,43 +121,44 @@
 		
 		<vbox flex="1" class="scope03">
 			
-            <hbox flex="1">
-                <label control="outputfile03" value="Output File"/>
-                <textbox id="outputfile03" flex="1" preference="pref_outputfile03"/>
-                <button onclick="extensions.less._selectOutputFile(this)" label="Set Output File" />
-            </hbox>
-            
-            <html:p>
-                <html:strong>
-                    Include LESS folders
-                </html:strong>
-            </html:p>
-            
-            <hbox flex="1">
-                <label control="includeLess03Folder01" value="Include LESS folder #01"/>
-                <textbox id="includeLess03Folder01" flex="1" preference="pref_includeLess03Folder01"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
-            <hbox flex="1">
-                <label control="includeLess03Folder02" value="Include LESS folder #02"/>
-                <textbox id="includeLess03Folder02" flex="1" preference="pref_includeLess03Folder02"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
-            
-            <hbox flex="1">
-                <label control="includeLess03Folder03" value="Include LESS folder #03"/>
-                <textbox id="includeLess03Folder03" flex="1" preference="pref_includeLess03Folder03"/>
-                <button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
-            </hbox>
+			<hbox flex="1">
+				<label control="outputfile03" value="Output File"/>
+				<textbox id="outputfile03" flex="1" preference="pref_outputfile03"/>
+				<button onclick="extensions.less._selectOutputFile(this)" label="Set Output File" />
+			</hbox>
+			
+			<html:p>
+				<html:strong>
+					Include LESS folders
+				</html:strong>
+			</html:p>
+			
+			<hbox flex="1">
+				<label control="includeLess03Folder01" value="Include LESS folder #01"/>
+				<textbox id="includeLess03Folder01" flex="1" preference="pref_includeLess03Folder01"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
+			<hbox flex="1">
+				<label control="includeLess03Folder02" value="Include LESS folder #02"/>
+				<textbox id="includeLess03Folder02" flex="1" preference="pref_includeLess03Folder02"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
+			
+			<hbox flex="1">
+				<label control="includeLess03Folder03" value="Include LESS folder #03"/>
+				<textbox id="includeLess03Folder03" flex="1" preference="pref_includeLess03Folder03"/>
+				<button onclick="extensions.less._selectIncludeFolder(this)" label="Include LESS Folder" />
+			</hbox>
 			
 			<hbox style="margin-top: 3px;" flex="1">
 				<spacer flex="3"/>
 				<button flex="1" onclick="extensions.less._clearScope(this)" label="Clear Scope" />
 			</hbox>
 			
-        </vbox>
+		</vbox>
 			
 	</prefpane>
 
 </prefwindow>
+
