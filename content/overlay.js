@@ -178,9 +178,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		var useFileWatcher = prefs.getBoolPref('useFilewatcher'),
 			fileWatcher = prefs.getCharPref('fileWatcher'),
 			d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc;
-		if (d === null) {
-			return false;
-		}	
 		var	file = d.file,
 			path = (file) ? file.URI : null;
 
