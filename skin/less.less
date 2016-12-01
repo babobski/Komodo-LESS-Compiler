@@ -17,11 +17,18 @@
 		border-color: darken(@background, 4%);
 		popupset,
 		panel,
-		tree,
-		treerows {
+		tree {
 			background-color: darken(@background, 4%) !important;
 			border-color: darken(@background, 4%) !important;
 		}
+	}
+}
+
+#new-flescope-window {
+	.btnBox {
+		padding-top: 7px;
+		content: "\f099";
+		font-family: 'FontAwesome';
 	}
 }
 
@@ -32,24 +39,24 @@
 			background-image: url('chrome://less/content/komodo-less.png') !important;
 			background-repeat: no-repeat;
 			background-position: 0px 4px;
-			background-size: auto 11px;
+			background-size: auto 10px;
 			padding-left: 30px;
 			padding-right: 10px;
 		}
 	}
-}  
+}	
  
 prefwindow,
 prefwindow:root {
-  -moz-binding: url("chrome://global/content/bindings/preferences.xml#prefwindow");
+	-moz-binding: url("chrome://global/content/bindings/preferences.xml#prefwindow");
 }
 .pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > vbox,
 .pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > hbox,
 .pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > box {
-  padding: 10px;
+	padding: 10px;
 }
-prefwindow > prefpane {  
-  padding: 10px;
+prefwindow > prefpane {	
+	padding: 10px;
 }
 
 h3 {
@@ -59,14 +66,25 @@ h3 {
 
 prefwindow
 {
-    #less-filescopes-pane {
-		label {
-			padding: 3px;
-			font-weight: bold;
-		}
-		strong {
-			font-weight: bold;
-			font-size: 14px;
+	#less-filescopes-pane {
+		tree {
+			height: 100%;
 		}
 	}
 }
+
+#fileScopes {
+	listcol {
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+}
+
+
+
+
+
+
+
+
+

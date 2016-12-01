@@ -1,4 +1,5 @@
 xtk.load('chrome://less/content/less/less.min.js');
+xtk.load('chrome://less/content/helper.js');
 
 /**
  * Namespaces
@@ -13,11 +14,13 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		self = this,
 		search = false,
 		editor = require("ko/editor"),
+		parse = ko.uriparse,
+		helper = new Helper(),
 		prefs = Components.classes["@mozilla.org/preferences-service;1"]
 		.getService(Components.interfaces.nsIPrefService).getBranch("extensions.less.");
 
 
-	if (!('extensions' in  ko)) ko.extensions = {};
+	if (!('extensions' in	ko)) ko.extensions = {};
 	var myExt = "lesscompiler@komodoeditide.com";
 	if (!(myExt in ko.extensions)) ko.extensions[myExt] = {};
 	if (!('myapp' in ko.extensions[myExt])) ko.extensions[myExt].myapp = {};
@@ -44,25 +47,27 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		getVars = getVars || false;
 
 		var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc;
-		if (d === null) {
+		if (d === null || d.file === null) {
 			return false;
 		}
-		var	fileContent = self._getContent(d),
-			file = fileContent.file,
-			buffer = fileContent.buffer,
-			base = fileContent.base,
-			path = fileContent.path,
-			compilerEnabled = prefs.getBoolPref('compilerEnabled');
-
-		if (!compilerEnabled && !getVars) {
-			return;
-		}
-
-		if (!file || !path) {
-			return;
-		}
 		
-		if (file.ext == '.less') {
+		var fileExt = d.file.ext;
+		if (fileExt == '.less') {
+			var	fileContent = self._getContent(d),
+				file = fileContent.file,
+				buffer = fileContent.buffer,
+				base = fileContent.base,
+				path = fileContent.path,
+				compilerEnabled = prefs.getBoolPref('compilerEnabled');
+	
+			if (!compilerEnabled && !getVars) {
+				return;
+			}
+	
+			if (!file || !path) {
+				return;
+			}
+		
 			if (getVars) {
 				self._notifcation('LESS: Getting LESS vars');
 			}
@@ -172,6 +177,66 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	this.compileCompressSelection = function() {
 		this.compileSelection(true);
 	}
+	
+	this.compileMultipleFiles = function(scope) {
+		scope = scope || false;
+		var compilerEnabled = prefs.getBoolPref('compilerEnabled'),
+		compress = prefs.getBoolPref('compressFile');
+
+		if (!compilerEnabled || !scope) {
+			return;
+		}
+		
+		var outputFiles = scope.outputfiles,
+			base = scope.projectDir,
+			proccesedLess = [];
+		
+		for (var w = 0; w < outputFiles.length; w++) {
+			var outputfile = outputFiles[w],
+				path = base + outputfile,
+				proccesedFile = {};
+				
+			newBase = path.substr((self._last_slash(path) + 1), path.length);
+			
+			var buffer = self._readFile(path, '')[0],
+			
+			outputLess = self._proces_less(path, newBase, buffer);
+			proccesedFile.path = path;
+			proccesedFile.output = outputLess;
+			proccesedLess.push(proccesedFile);
+		}
+		
+		var counter = 0;
+		var running = false;
+		var procesLess = setInterval(function(){
+			if (!running) {
+				running = true;
+				var procestFile = proccesedLess[counter];
+				less.render(procestFile.output, {
+					compress: compress,
+					async: false,
+				})
+				.then(function(output) {
+					var newFilename = procestFile.path.replace('.less', '.css');
+					self._saveFile(newFilename, output.css);
+					running = false;
+					
+					self._notifcation('LESS: File saved');
+					self._updateStatusBar();
+					
+				},
+				function(error) {
+					self._notifcation('LESS ERROR: ' + error, true);
+					self._updateStatusBar('LESS ERROR: ' + error);
+					running = false;
+				});
+				counter++;
+				if (counter === proccesedLess.length) {
+					clearInterval(procesLess);
+				}
+			}
+		}, 100);
+	};
 
 	this.getVars = function(search) {
 		search = search || false;
@@ -206,60 +271,106 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			buffer = doc.buffer,
 			base = (file) ? file.baseName : null,
 			filePath = (file) ? file.URI : null,
+			scopes = [],
 			path = '';
-		output = {};
-
+			output = {};
 
 		if (prefs.getBoolPref('useFileScopes')) {
-			var outputfile01 = prefs.getCharPref('outputfile01'),
-				outputfile02 = prefs.getCharPref('outputfile02'),
-				outputfile03 = prefs.getCharPref('outputfile03'),
-				includeLess01Folder01 = prefs.getCharPref('includeLess01Folder01').length > 0 ? prefs.getCharPref('includeLess01Folder01') : null,
-				includeLess01Folder02 = prefs.getCharPref('includeLess01Folder02').length > 0 ? prefs.getCharPref('includeLess01Folder02') : null,
-				includeLess01Folder03 = prefs.getCharPref('includeLess01Folder03').length > 0 ? prefs.getCharPref('includeLess01Folder03') : null,
-				includeLess02Folder01 = prefs.getCharPref('includeLess02Folder01').length > 0 ? prefs.getCharPref('includeLess02Folder01') : null,
-				includeLess02Folder02 = prefs.getCharPref('includeLess02Folder02').length > 0 ? prefs.getCharPref('includeLess02Folder02') : null,
-				includeLess02Folder03 = prefs.getCharPref('includeLess02Folder03').length > 0 ? prefs.getCharPref('includeLess02Folder03') : null,
-				includeLess03Folder01 = prefs.getCharPref('includeLess03Folder01').length > 0 ? prefs.getCharPref('includeLess03Folder01') : null,
-				includeLess03Folder02 = prefs.getCharPref('includeLess03Folder02').length > 0 ? prefs.getCharPref('includeLess03Folder02') : null,
-				includeLess03Folder03 = prefs.getCharPref('includeLess03Folder03').length > 0 ? prefs.getCharPref('includeLess03Folder03') : null,
-				parser = ko.uriparse
-			displayPath = parser.displayPath(filePath);
-
-			if (outputfile01.length > 0) {
-				if (displayPath.indexOf(parser.displayPath(includeLess01Folder01)) !== -1) {
-					path = outputfile01;
-				} else if (displayPath.indexOf(parser.displayPath(includeLess01Folder02)) !== -1) {
-					path = outputfile01;
-				} else if (displayPath.indexOf(parser.displayPath(includeLess01Folder03)) !== -1) {
-					path = outputfile01;
+			var parser = ko.uriparse,
+				displayPath = parser.displayPath(filePath),
+				projectDir;
+			var fileScopes = prefs.getCharPref('fileScopes');
+			var parsedScopes = JSON.parse(fileScopes);
+			var currentProject = ko.projects.manager.currentProject;
+			var matchedScopes = [];
+			
+			if (currentProject === null) {
+				notify.send('No current project', 'Tools');
+				path = displayPath;
+			} else {
+				var currentProjectName = currentProject.name.replace(/.komodoproject$/, '');
+				if (currentProject.importDirectoryLocalPath === null) {
+					projectDir = parse.displayPath(currentProject.importDirectoryURI);
+				} else {
+					projectDir = parse.displayPath(currentProject.importDirectoryLocalPath);
+				}
+				
+				if (displayPath.indexOf(projectDir) !== -1) {
+					if (helper.notEmpty(parsedScopes)) {
+						for (var i = 0; i < parsedScopes.length; i++) {
+							var thisScope = parsedScopes[i];
+							if (thisScope.project === currentProjectName) {
+								matchedScopes.push(thisScope);
+							}
+						}
+						
+						if (matchedScopes.length > 0) {
+							
+							for (var e = 0; e < matchedScopes.length; e++) {
+								var matchScope = matchedScopes[e];
+								var outputfiles = matchScope.outputfiles;
+								var includeFolders = matchScope.includeFolders;
+								var matchedOutputFile = false;
+								
+								if (outputfiles.length > 1) {
+									
+									for (var s = 0; s < outputfiles.length; s++) {
+										var matchString = outputfiles[s];
+										if (displayPath.indexOf(matchString) !== -1) {
+											path = displayPath;
+											matchedOutputFile = true;
+										}
+									}
+									
+									if (!matchedOutputFile) {
+										for (var m = 0; m < includeFolders.length; m++) {
+											var matchString = includeFolders[m];
+											if (displayPath.indexOf(matchString) !== -1) {
+												self.compileMultipleFiles(matchScope);
+												return false;
+											}
+										}
+									}
+									
+								} else if(outputfiles.length === 1) {
+									
+									if (displayPath.indexOf(outputfiles[0]) !== -1) {
+										path = displayPath;
+										matchedOutputFile = true;
+									}
+									
+									if (!matchedOutputFile) {
+										for (var n = 0; n < includeFolders.length; n++) {
+											var matchString = includeFolders[n];
+											if (displayPath.indexOf(matchString) !== -1) {
+												path = projectDir + outputfiles[0];
+											}
+										}
+									}
+									
+								} 
+								
+								
+							}
+						} else {
+							notify.send('File outside scope', 'Tools');
+							path = displayPath;
+						}
+						
+					} else {
+						notify.send('File Scopes are empty', 'Tools');
+						path = displayPath;
+					}
+				} else {
+					notify.send('File not in current project', 'Tools');
+					path = displayPath;
 				}
 			}
-
-			if (outputfile02.length > 0) {
-				if (displayPath.indexOf(parser.displayPath(includeLess02Folder01)) !== -1) {
-					path = outputfile02;
-				} else if (displayPath.indexOf(parser.displayPath(includeLess02Folder02)) !== -1) {
-					path = outputfile02;
-				} else if (displayPath.indexOf(parser.displayPath(includeLess02Folder03)) !== -1) {
-					path = outputfile02;
-				}
-			}
-
-			if (outputfile03.length > 0) {
-				if (displayPath.indexOf(parser.displayPath(includeLess03Folder01)) !== -1) {
-					path = outputfile03;
-				} else if (displayPath.indexOf(parser.displayPath(includeLess03Folder02)) !== -1) {
-					path = outputfile03;
-				} else if (displayPath.indexOf(parser.displayPath(includeLess03Folder03)) !== -1) {
-					path = outputfile03;
-				}
-			}
-
+				
 		} else if (prefs.getBoolPref('useFilewatcher')) {
 			path = prefs.getCharPref('fileWatcher');
 			base = path.substr(self._last_slash(path) + 1, path.lenght),
-				buffer = self._readFile(path, '')[0];
+				 buffer = self._readFile(path, '')[0];
 		}
 
 		if (!path) {
@@ -471,8 +582,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 	this._proces_less = function(path, base, buffer) {
 		var rootPath = path.replace(base, '');
-
-
 		var lessCss = String(buffer),
 			LESS = '';
 
@@ -730,7 +839,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 	insertLessVar = function() {
 		var scimoz = ko.views.manager.currentView.scimoz,
-			currentLine =  scimoz.lineFromPosition(scimoz.currentPos),
+			currentLine =	scimoz.lineFromPosition(scimoz.currentPos),
 			input = $('#less_auto');
 
 		if (input.length > 0) {
@@ -846,54 +955,91 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			if (prefs.getBoolPref('useFileScopes')) {
 				var path = 'Outside file scope',
 					filePath = (file) ? file.URI : null,
-					outputfile01 = prefs.getCharPref('outputfile01'),
-					outputfile02 = prefs.getCharPref('outputfile02'),
-					outputfile03 = prefs.getCharPref('outputfile03'),
-					includeLess01Folder01 = prefs.getCharPref('includeLess01Folder01').length > 0 ? prefs.getCharPref('includeLess01Folder01') : null,
-					includeLess01Folder02 = prefs.getCharPref('includeLess01Folder02').length > 0 ? prefs.getCharPref('includeLess01Folder02') : null,
-					includeLess01Folder03 = prefs.getCharPref('includeLess01Folder03').length > 0 ? prefs.getCharPref('includeLess01Folder03') : null,
-					includeLess02Folder01 = prefs.getCharPref('includeLess02Folder01').length > 0 ? prefs.getCharPref('includeLess02Folder01') : null,
-					includeLess02Folder02 = prefs.getCharPref('includeLess02Folder02').length > 0 ? prefs.getCharPref('includeLess02Folder02') : null,
-					includeLess02Folder03 = prefs.getCharPref('includeLess02Folder03').length > 0 ? prefs.getCharPref('includeLess02Folder03') : null,
-					includeLess03Folder01 = prefs.getCharPref('includeLess03Folder01').length > 0 ? prefs.getCharPref('includeLess03Folder01') : null,
-					includeLess03Folder02 = prefs.getCharPref('includeLess03Folder02').length > 0 ? prefs.getCharPref('includeLess03Folder02') : null,
-					includeLess03Folder03 = prefs.getCharPref('includeLess03Folder03').length > 0 ? prefs.getCharPref('includeLess03Folder03') : null,
-					parser = ko.uriparse,
-					displayPath = parser.displayPath(filePath);
-
-				if (outputfile01.length > 0) {
-					if (displayPath.indexOf(parser.displayPath(includeLess01Folder01)) !== -1) {
-						path = outputfile01;
-					} else if (displayPath.indexOf(parser.displayPath(includeLess01Folder02)) !== -1) {
-						path = outputfile01;
-					} else if (displayPath.indexOf(parser.displayPath(includeLess01Folder03)) !== -1) {
-						path = outputfile01;
-					} else if (displayPath.indexOf(parser.displayPath(outputfile01)) !== -1) {
-						path = outputfile01;
+					parser = ko.uriparse;
+					
+				var parser = ko.uriparse,
+					displayPath = parser.displayPath(filePath),
+					projectDir;
+				var fileScopes = prefs.getCharPref('fileScopes');
+				var parsedScopes = JSON.parse(fileScopes);
+				var currentProject = ko.projects.manager.currentProject;
+				var matchedScopes = [];
+				
+				if (currentProject === null) {
+					path = 'No current project';
+				} else {
+					var currentProjectName = currentProject.name.replace(/.komodoproject$/, '');
+					if (currentProject.importDirectoryLocalPath === null) {
+						projectDir = parse.displayPath(currentProject.importDirectoryURI);
+					} else {
+						projectDir = parse.displayPath(currentProject.importDirectoryLocalPath);
 					}
-				}
-
-				if (outputfile02.length > 0) {
-					if (displayPath.indexOf(parser.displayPath(includeLess02Folder01)) !== -1) {
-						path = outputfile02;
-					} else if (displayPath.indexOf(parser.displayPath(includeLess02Folder02)) !== -1) {
-						path = outputfile02;
-					} else if (displayPath.indexOf(parser.displayPath(includeLess02Folder03)) !== -1) {
-						path = outputfile02;
-					} else if (displayPath.indexOf(parser.displayPath(outputfile02)) !== -1) {
-						path = outputfile02;
-					}
-				}
-
-				if (outputfile03.length > 0) {
-					if (displayPath.indexOf(parser.displayPath(includeLess03Folder01)) !== -1) {
-						path = outputfile03;
-					} else if (displayPath.indexOf(parser.displayPath(includeLess03Folder02)) !== -1) {
-						path = outputfile03;
-					} else if (displayPath.indexOf(parser.displayPath(includeLess03Folder03)) !== -1) {
-						path = outputfile03;
-					} else if (displayPath.indexOf(parser.displayPath(outputfile03)) !== -1) {
-						path = outputfile03
+					
+					if (displayPath.indexOf(projectDir) !== -1) {
+						if (helper.notEmpty(parsedScopes)) {
+							for (var i = 0; i < parsedScopes.length; i++) {
+								var thisScope = parsedScopes[i];
+								if (thisScope.project === currentProjectName) {
+									matchedScopes.push(thisScope);
+								}
+							}
+							
+							if (matchedScopes.length > 0) {
+								
+								for (var e = 0; e < matchedScopes.length; e++) {
+									var matchScope = matchedScopes[e];
+									var outputfiles = matchScope.outputfiles;
+									var includeFolders = matchScope.includeFolders;
+									var matchedOutputFile = false;
+									
+									if (outputfiles.length > 1) {
+										
+										for (var s = 0; s < outputfiles.length; s++) {
+											var matchString = outputfiles[s];
+											if (displayPath.indexOf(matchString) !== -1) {
+												path = matchScope.name;
+												matchedOutputFile = true;
+											}
+										}
+										
+										if (!matchedOutputFile) {
+											for (var m = 0; m < includeFolders.length; m++) {
+												var matchString = includeFolders[m];
+												if (displayPath.indexOf(matchString) !== -1) {
+													path = matchScope.name;
+												}
+											}
+										}
+										
+									} else if(outputfiles.length === 1) {
+										
+										if (displayPath.indexOf(outputfiles[0]) !== -1) {
+											path = matchScope.name;
+											matchedOutputFile = true;
+										}
+										
+										if (!matchedOutputFile) {
+											for (var n = 0; n < includeFolders.length; n++) {
+												var matchString = includeFolders[n];
+												if (displayPath.indexOf(matchString) !== -1) {
+													path = matchScope.name;
+												}
+											}
+										}
+										
+									} 
+									
+									
+								}
+							} else {
+								path = 'File outside scope';
+							}
+							
+						} else {
+							path = 'File Scopes are empty';
+						}
+					} else {
+						path = 'File not in current project';
 					}
 				}
 
@@ -1038,29 +1184,29 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		if (msgType === 'web-notifications') {
 			var icon = error ? 'chrome://less/content/less-error-icon.png' : 'chrome://less/content/less-icon.png';
 			if (!("Notification" in window)) {
-			  alert("This browser does not support system notifications");
+				alert("This browser does not support system notifications");
 			}
-		  
+			
 			else if (Notification.permission === "granted") {
-			  var options = {
+				var options = {
 				body: $message,
 				icon: icon
-			  }
-			  var n = new Notification('LESS Compiler', options);
-			  setTimeout(n.close.bind(n), 5000); 
+				}
+				var n = new Notification('LESS Compiler', options);
+				setTimeout(n.close.bind(n), 5000); 
 			}
-		  
+			
 			else if (Notification.permission !== 'denied') {
-			  Notification.requestPermission(function (permission) {
+				Notification.requestPermission(function (permission) {
 				if (permission === "granted") {
 					var options = {
-					   body: $message,
-					   icon: icon
+						 body: $message,
+						 icon: icon
 					 }
 					 var n = new Notification('LESS Compiler', options);
 					setTimeout(n.close.bind(n), 5000); 
 				}
-			  });
+				});
 			}
 		} else {
 			notify.send(
@@ -1070,20 +1216,48 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		}
 	}
 
-	var features = "chrome,titlebar,toolbar,centerscreen";
+	var features = "chrome,titlebar,toolbar,centerscreen,dependent";
 	this.OpenLessSettings = function() {
 		window.openDialog('chrome://less/content/pref-overlay.xul', "lessSettings", features);
 	}
 
 	this.OpenLessFileScopes = function() {
+		var currentProject = ko.projects.manager.currentProject;
 		var windowVars = {
 			ko: ko,
 			lessData: lessData,
 			prefs: prefs,
 			overlay: self,
 			notify: notify,
+			project: currentProject,
 		};
+		
 		window.openDialog('chrome://less/content/fileScopes.xul', "lessFileScopes", features, windowVars);
+	}
+	
+	this.openNewFileScope = function(scope){
+		scope = scope || false;
+		
+		features = features + ',alwaysRaised';
+		
+		var currentProject = ko.projects.manager.currentProject;
+		var windowVars = {
+			ko: ko,
+			scope: scope,
+			lessData: lessData,
+			prefs: prefs,
+			overlay: self,
+			notify: notify,
+			project: currentProject,
+		};
+		
+		if (currentProject === null && scope === false) {
+			alert('No current project selected');
+			window.focus();
+			return false;
+		}
+		
+		window.openDialog('chrome://less/content/new-filescope.xul', "newFileScope", features, windowVars);
 	}
 
 	this._AfterSafeAction = function() {
@@ -1106,3 +1280,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	window.addEventListener("file_saved", self._AfterSafeAction, false);
 	window.addEventListener("current_view_changed", self._updateView, false);
 }).apply(extensions.less);
+
+
+
+
+
+
+

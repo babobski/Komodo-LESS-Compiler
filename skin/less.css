@@ -1,0 +1,66 @@
+/* Yes these 2 are not colors, doesnt warrant a rename at this time */
+/* Main Window */
+/* Elements */
+/* Special Elements */
+/* Widgets */
+/* SCC */
+/* Misc */
+#less_wrapper {
+  background-color: #323536;
+  border-color: #323536;
+  padding: 0;
+  -moz-appearance: none;
+}
+#less_wrapper #less_auto {
+  max-width: 270px;
+  width: 270px;
+  margin: 0;
+  padding: 0;
+  background-color: #323536;
+  border-color: #323536;
+}
+#less_wrapper #less_auto popupset,
+#less_wrapper #less_auto panel,
+#less_wrapper #less_auto tree {
+  background-color: #323536 !important;
+  border-color: #323536 !important;
+}
+#new-flescope-window .btnBox {
+  padding-top: 7px;
+  content: "\f099";
+  font-family: 'FontAwesome';
+}
+#statusbar-less #statusbar-less-label {
+  min-width: 70px;
+}
+#statusbar-less #statusbar-less-label > label {
+  background-image: url('chrome://less/content/komodo-less.png') !important;
+  background-repeat: no-repeat;
+  background-position: 0px 4px;
+  background-size: auto 10px;
+  padding-left: 30px;
+  padding-right: 10px;
+}
+prefwindow,
+prefwindow:root {
+  -moz-binding: url("chrome://global/content/bindings/preferences.xml#prefwindow");
+}
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > vbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > hbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > box {
+  padding: 10px;
+}
+prefwindow > prefpane {
+  padding: 10px;
+}
+h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+prefwindow #less-filescopes-pane tree {
+  height: 100%;
+}
+#fileScopes listcol {
+  padding-left: 2px;
+  padding-right: 2px;
+}
