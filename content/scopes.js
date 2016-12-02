@@ -246,9 +246,15 @@
 		newScope.name = name;
 		
 		self.saveFileScope();
+		less._focusFileScopes();
 		setTimeout(function(){
 			window.close();
 		}, 300);
+	}
+	
+	this.closeWindow = function(){
+		helper.focusWin('lessFileScopes');
+		window.close();
 	}
 
 }).apply();

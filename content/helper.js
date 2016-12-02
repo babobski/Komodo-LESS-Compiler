@@ -39,9 +39,11 @@
 		
 		while (wenum.hasMoreElements()) {
 			var win = wenum.getNext();
-			console.log(win.name);
 			if (win.name == windowName) {
 				win.focus();
+				if (windowName === 'lessFileScopes') {
+					win.init();
+				}
 				return;
 			}
 			index++

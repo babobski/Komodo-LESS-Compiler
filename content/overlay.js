@@ -221,7 +221,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 					self._saveFile(newFilename, output.css);
 					running = false;
 					
-					self._notifcation('LESS: File saved');
+					
 					self._updateStatusBar();
 					
 				},
@@ -232,6 +232,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				});
 				counter++;
 				if (counter === proccesedLess.length) {
+					self._notifcation('LESS: ' + counter + 'Files saved');
 					clearInterval(procesLess);
 				}
 			}
@@ -1258,6 +1259,12 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		}
 		
 		window.openDialog('chrome://less/content/new-filescope.xul', "newFileScope", features, windowVars);
+	}
+	
+	this._focusFileScopes = function(){
+		setTimeout(function(){
+			helper.focusWin('lessFileScopes');
+		}, 500);
 	}
 
 	this._AfterSafeAction = function() {

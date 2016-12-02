@@ -56,7 +56,7 @@
 		</hbox>
 		<hbox class="btnBox">
 			<button label="Ok" onclick="saveAndClose();" />
-			<button label="Cancel" onclick="window.close();" />
+			<button label="Cancel" onclick="closeWindow();" />
 			<spacer flex="1" />
 		</hbox>
 	</vbox>
