@@ -1,18 +1,18 @@
 # Komodo Less Compiler
 *LESS 2.7.1 compiler for Komodo Edit/Ide.*  
-This addon gives you the ability to compile Less files and gives a improved auto-completion of Less variables (also includes imports).
+This addon gives you the ability to compile Less files and gives a improved [auto-completion](https://github.com/babobski/Komodo-LESS-Compiler#auto-completion) of Less variables (also includes imports).
 
 ## Usage
 If you install this addon. default the compiler is enabled.  
 When you edit a LESS file the file will be compiled to a CSS file.
 
 If you have imports in you're Less-file or you want to run multiple output-files.  
-You need to use a file scope this enables you to set up project based file scopes, that will trigger output-files based on output-files and include-folders.  
-If you want to compile a file on the fly that has includes, you can also set up a single file watcher.  
+You need to use a file scope this enables you to set up project based [file scopes](https://github.com/babobski/Komodo-LESS-Compiler#file-scopes), that will trigger output-files based on output-files and include-folders.  
+If you want to compile a file on the fly that has includes, you can also set up a single [file watcher](https://github.com/babobski/Komodo-LESS-Compiler#file-watcher).  
 This will trigger the selected output-file regardless of the Less-file you're working on.
 
-Trough the Tools-menu and file context-menu are Less menu's added, that allows you to trigger file based commands and a few commands concerning file-watchers, file-scopes and auto-completion commands/settings.
-Also is a status-bar added to the breadcrumb-bar that also has a context-menu that allows you to control various commands/settings.
+Trough the Tools-menu and file context-menu are [Less menu's](https://github.com/babobski/Komodo-LESS-Compiler#menu-options) added, that allows you to trigger file based commands and a few commands concerning file-watchers, file-scopes and auto-completion commands/settings.
+Also is a [status-bar](https://github.com/babobski/Komodo-LESS-Compiler#status-bar-options) added to the breadcrumb-bar that also has a context-menu that allows you to control various commands/settings.
 
 ## Less Status-bar
 When editing Less files, a Less status bar will be shown.  
