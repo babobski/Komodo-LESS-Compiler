@@ -15,11 +15,10 @@
 		padding: 0;
 		background-color: darken(@background, 4%);
 		border-color: darken(@background, 4%);
-		popupset,
-		panel,
-		tree {
-			background-color: darken(@background, 4%) !important;
-			border-color: darken(@background, 4%) !important;
+		cursor: none !important;
+		pointer-events: none !important;
+		* {
+			pointer-events: none !important;
 		}
 	}
 }

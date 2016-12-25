@@ -16,20 +16,24 @@
 	<script>
 		var main = window.arguments[0],
 			prefs = main.prefs,
-			less = main.overlay;
+			less = main.overlay,
+			changed = false;
 			
-			
-			
-			function logPrefs() {
-				console.log(JSON.parse(prefs.getCharPref('fileScopes')));
+			function closeWindow() {
+				if (changed) {
+					if (!prefs.getBoolPref('useFileScopes')) {
+						less.enableFilescopes();
+					}
+				}
+				window.close();
 			}
 			
 	</script>
 		
 		<toolbox>
 			<toolbar id="filescope-toolbar">
-				<toolbarbutton label="Create new file scope" onclick="createNewScope();" />
-				<toolbarbutton label="Edit selected" onclick="editFileScope();" />
+				<toolbarbutton label="Create new file scope" onclick="createNewScope(); changed = true;" />
+				<toolbarbutton label="Edit selected" onclick="editFileScope(); changed = true;" />
 				<toolbarbutton label="Remove selected" onclick="removeScope();" />
 				<spacer flex="1" />
 			</toolbar>
@@ -55,7 +59,7 @@
 
 		
 			<hbox class="btnBox">
-				<button label="Ok" onclick="window.close();" />
+				<button label="Ok" onclick="closeWindow();" />
 				<spacer flex="1" />
 			</hbox>
 		</vbox>

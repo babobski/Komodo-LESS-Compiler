@@ -14,6 +14,8 @@
 		<command id="Tasks:LessCompileSelectionCompress" oncommand="extensions.less.compileCompressSelection();"/>
 		<command id="Tasks:LessEnableFileWatcher" oncommand="extensions.less.enableFileWatcher();"/>
 		<command id="Tasks:LessDisableFileWatcher" oncommand="extensions.less.disableFileWatcher();"/>
+		<command id="Tasks:LessEnableFileScopes" oncommand="extensions.less.enableFileScopes();"/>
+		<command id="Tasks:LessDisableFileScopes" oncommand="extensions.less.disableFileScopes();"/>
 		<command id="Tasks:LessCollectVars" oncommand="extensions.less.getVars();"/>
 		<command id="Tasks:LessSettings" oncommand="extensions.less.OpenLessSettings();"/>
 	</commandset>
@@ -51,7 +53,7 @@
 					observes="Tasks:LessCollectVars"
 					class="menu-iconic-wide" />
 			<menu id="menu_filewatcher" label="File Watcher">
-			<menupopup id="menu_filewatcer_popup">
+			<menupopup id="menu_filewatcher_popup">
 				<menuitem id="menu_filewatcher_enable"
 					label="Enable File Watcher for current file"
 					observes="Tasks:LessEnableFileWatcher"
@@ -60,6 +62,20 @@
 				<menuitem id="menu_filewatcher_disable"
 					label="Disable File Watcher"
 					observes="Tasks:LessDisableFileWatcher"
+					class="menu-iconic-wide">
+				</menuitem>
+			</menupopup>
+			</menu>
+			<menu id="menu_filescopes" label="File Scopes">
+			<menupopup id="menu_filescopes_popup">
+				<menuitem id="menu_filescopes_enable"
+					label="Enable File Scopes"
+					observes="Tasks:LessEnableFileScopes"
+					class="menu-iconic-wide">
+				</menuitem>
+				<menuitem id="menu_filescopes_disable"
+					label="Disable File Scopes"
+					observes="Tasks:LessDisableFileScopes"
 					class="menu-iconic-wide">
 				</menuitem>
 			</menupopup>
@@ -117,6 +133,20 @@
 						class="menu-iconic-wide">
 					</menuitem>
 				</menupopup>
+				</menu>
+				<menu id="menu_filescopes_contect-menu" label="File Scopes">
+					<menupopup id="menu_filescopes_contect-menu_popup">
+						<menuitem id="menu_filescopes_contect-menu_enable"
+							label="Enable File Scopes"
+							observes="Tasks:LessEnableFileScopes"
+							class="menu-iconic-wide">
+						</menuitem>
+						<menuitem id="menu_filescopes_contect-menu_disable"
+							label="Disable File Scopes"
+							observes="Tasks:LessDisableFileScopes"
+							class="menu-iconic-wide">
+						</menuitem>
+					</menupopup>
 				</menu>
 			</menupopup>
 		</menu>

@@ -17,11 +17,12 @@
 			name = document.getElementById('scopeName');
 		
 		if (scope !== false) {
+			console.log(scope);
 			name.value = scope.name;
 			newScope.project = scope.project;
 			newScope.outputfiles = scope.outputfiles;
 			newScope.includeFolders = scope.includeFolders;
-			projectDir = scope.projectDir;
+			newScope.projectDir = scope.projectDir;
 			
 			var outputFileTree = document.getElementById('outputFiles');
 			var includeFoldersTree = document.getElementById('includeFolders');

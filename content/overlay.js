@@ -13,6 +13,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		$ = require("ko/dom"),
 		self = this,
 		search = false,
+		notification = false,
 		editor = require("ko/editor"),
 		parse = ko.uriparse,
 		helper = new Helper(),
@@ -53,7 +54,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		
 		var fileExt = d.file.ext;
 		if (fileExt == '.less') {
-			var	fileContent = self._getContent(d),
+			var	fileContent = self._getContent(d, getVars),
 				file = fileContent.file,
 				buffer = fileContent.buffer,
 				base = fileContent.base,
@@ -76,8 +77,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			if (getVars) {
 				var allVars = self._getVars(outputLess);
 				lessData.vars = allVars;
-				if (lessData.vars !== undefined) { // TODO clean up
-				} else {
+				if (lessData.vars === undefined){
 					lessData.vars = '';
 					self._notifcation('LESS: No LESS vars found');
 				}
@@ -178,8 +178,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		this.compileSelection(true);
 	}
 	
-	this.compileMultipleFiles = function(scope) {
+	this.compileMultipleFiles = function(scope, getVars) {
 		scope = scope || false;
+		getVars = getVars || false;
 		var compilerEnabled = prefs.getBoolPref('compilerEnabled'),
 		compress = prefs.getBoolPref('compressFile');
 
@@ -206,37 +207,53 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			proccesedLess.push(proccesedFile);
 		}
 		
-		var counter = 0;
-		var running = false;
-		var procesLess = setInterval(function(){
-			if (!running) {
-				running = true;
-				var procestFile = proccesedLess[counter];
-				less.render(procestFile.output, {
-					compress: compress,
-					async: false,
-				})
-				.then(function(output) {
-					var newFilename = procestFile.path.replace('.less', '.css');
-					self._saveFile(newFilename, output.css);
-					running = false;
-					
-					
-					self._updateStatusBar();
-					
-				},
-				function(error) {
-					self._notifcation('LESS ERROR: ' + error, true);
-					self._updateStatusBar('LESS ERROR: ' + error);
-					running = false;
-				});
-				counter++;
-				if (counter === proccesedLess.length) {
-					self._notifcation('LESS: ' + counter + 'Files saved');
-					clearInterval(procesLess);
-				}
+		if (getVars) {
+			self._notifcation('LESS: Getting LESS vars');
+			
+			for (var i = 0 ; i < proccesedLess.length; i++) {
+				output = proccesedLess[i].output;
+				var allVars = self._getVars(output);
+				lessData.vars = allVars;
+				self._getVars(output);
 			}
-		}, 100);
+			
+			if (lessData.vars === undefined){
+				lessData.vars = '';
+				self._notifcation('LESS: No LESS vars found');
+			}
+		} else {
+			var counter = 0;
+			var running = false;
+			var procesLess = setInterval(function(){
+				if (!running) {
+					running = true;
+					var procestFile = proccesedLess[counter];
+					less.render(procestFile.output, {
+						compress: compress,
+						async: false,
+					})
+					.then(function(output) {
+						var newFilename = procestFile.path.replace('.less', '.css');
+						self._saveFile(newFilename, output.css);
+						running = false;
+						
+						
+						self._updateStatusBar();
+						
+					},
+					function(error) {
+						self._notifcation('LESS ERROR: ' + error, true);
+						self._updateStatusBar('LESS ERROR: ' + error);
+						running = false;
+					});
+					counter++;
+					if (counter === proccesedLess.length) {
+						self._notifcation('LESS: ' + counter + ' Files saved');
+						clearInterval(procesLess);
+					}
+				}
+			}, 100);
+		}
 	};
 
 	this.getVars = function(search) {
@@ -267,13 +284,14 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 		return false;
 	}
 
-	this._getContent = function(doc) {
+	this._getContent = function(doc, getVars) {
 		var file = doc.file,
 			buffer = doc.buffer,
 			base = (file) ? file.baseName : null,
 			filePath = (file) ? file.URI : null,
 			scopes = [],
-			path = '';
+			path = '',
+			getVars = getVars || false,
 			output = {};
 
 		if (prefs.getBoolPref('useFileScopes')) {
@@ -323,11 +341,11 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 										}
 									}
 									
-									if (!matchedOutputFile) {
+									if (includeFolders.length > 0) {
 										for (var m = 0; m < includeFolders.length; m++) {
 											var matchString = includeFolders[m];
 											if (displayPath.indexOf(matchString) !== -1) {
-												self.compileMultipleFiles(matchScope);
+												self.compileMultipleFiles(matchScope, getVars);
 												return false;
 											}
 										}
@@ -340,7 +358,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 										matchedOutputFile = true;
 									}
 									
-									if (!matchedOutputFile) {
+									if (includeFolders.length > 0) {
 										for (var n = 0; n < includeFolders.length; n++) {
 											var matchString = includeFolders[n];
 											if (displayPath.indexOf(matchString) !== -1) {
@@ -348,10 +366,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 											}
 										}
 									}
-									
 								} 
-								
-								
 							}
 						} else {
 							notify.send('File outside scope', 'Tools');
@@ -669,11 +684,10 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			output = [];
 
 		if (buffer.match(/@[a-z0-9_-]+:/i)) {
-			bufferVars = buffer.match(/@[a-z0-9_-]+:[^;,\r\n]+/gi);
-			allVars = bufferVars.toString().split(',');
-
-			allVars.forEach(function(value, i) {
-				var VarAndValues = value.split(':'),
+			bufferVars = buffer.match(/@[a-z0-9_-]+:[^;\r\n]+/gi);
+			for (var i = 0; i < bufferVars.length; i++) {
+				bufferVar = bufferVars[i];
+				var VarAndValues = bufferVar.split(':'),
 					val = VarAndValues[0],
 					comm = VarAndValues[1].replace(/^\s+/, '');
 				if (!self._in_array(val, output)) {
@@ -682,7 +696,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 						"comment": comm
 					});
 				}
-			})
+			}
 
 			return JSON.stringify(output);
 		}
@@ -804,38 +818,19 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	}
 
 	this._calculateXpos = function() {
-		var currentWindowPos = editor.getCursorWindowPosition(),
-			windowX =+ currentWindowPos['x'],
-			newToolbar = window.top.document.getElementById('toolbox_side'),
-			leftSidebarWith =+ window.top.document.getElementById('workspace_left_area').clientWidth,
-			totalLeftSidebarWidth =+ leftSidebarWith;
+		var currentWindowPos = editor.getCursorWindowPosition(true);
 			
-			if (newToolbar !== null) {
-				totalLeftSidebarWidth = totalLeftSidebarWidth + newToolbar.clientWidth;
-			}
-			
-		return windowX - totalLeftSidebarWidth;
+		return currentWindowPos.x;
 	}
 
 	this._calculateYpos = function() {
-		var currentWindowPos = editor.getCursorWindowPosition(),
-			view = $(require("ko/views").current().get()),
-			windowY = +currentWindowPos['y'],
-			docH = +document.height,
-			adjustY =+ prefs.getIntPref('tooltipY'),
-			leftH = +window.top.document.getElementById('workspace_left_area').clientHeight, //left pane
-			menuH = +window.top.document.getElementById('toolbox_main').clientHeight, // top menu
-			tabs = window.top.document.getElementById('tabbed-view')._tabs,
-			tabsH = +tabs.clientHeight, //tabs height
-			tabsT = +tabs.clientTop, //tabs ofsset top
-			breadcrumbBar = view.findAnonymous("anonid", "breadcrumbBarWrap"), // breadcrumbbar 
-			breadcrumbBarH =+ breadcrumbBar._elements[0].clientHeight, // Todo check if not in bottom postion
-			preCalc = docH - leftH + 1,
-			topCalc = (menuH + breadcrumbBarH + preCalc) - ( tabsH + tabsT );
-
-		topCalc = topCalc + adjustY;
+		var currentWindowPos = editor.getCursorWindowPosition(true),
+			defaultTextHeight = (ko.views.manager.currentView.scimoz.textHeight(0) - 10),
+			adjustY =+ prefs.getIntPref('tooltipY');
+			
+			defaultTextHeight = defaultTextHeight + adjustY;
 		
-		return windowY - topCalc;
+		return (currentWindowPos.y + defaultTextHeight);
 	}
 
 	insertLessVar = function() {
@@ -887,6 +882,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 	this._autocomplete = function() {
 		var completions = lessData.vars,
+			mainWindow = document.getElementById('komodo_main'),
 			popup = document.getElementById('less_wrapper'),
 			autocomplete = document.createElement('textbox'),
 			currentView = ko.views.manager.currentView,
@@ -903,12 +899,13 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 			autocomplete.setAttribute('highlightnonmatches', 'true');
 			autocomplete.setAttribute('ontextentered', 'insertLessVar()');
 			autocomplete.setAttribute('ontextreverted', 'abortLessVarCompletion()');
+			autocomplete.setAttribute('ignoreblurwhilesearching', 'true');
 			autocomplete.setAttribute('minresultsforpopup', '0');
 			autocomplete.setAttribute('onblur', 'blurLessComletion()');
 			autocomplete.setAttribute('onfocus', 'focusLessCompletion()');
 			popup.appendChild(autocomplete);
 
-			document.documentElement.appendChild(popup);
+			mainWindow.appendChild(popup);
 		}
 
 		if (typeof completions === 'undefined') {
@@ -923,7 +920,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				currentView.scintilla.autocomplete.close();
 			}
 			autocomplete.setAttribute('autocompletesearchparam', completions);
-			popup.openPopup(ko.views.manager.currentView, "after_pointer", x, y, false, false);
+			popup.openPopup(mainWindow, "", x, y, false, false);
 			autocomplete.focus();
 			autocomplete.value = "@";
 			autocomplete.open = true;
@@ -1145,13 +1142,17 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 		this._onKeyPress = function(e) {
 			var scimoz = ko.views.manager.currentView.scimoz;
-			if (e.shiftKey && e.charCode == 64) {
+			if (e.shiftKey && e.charCode == 64 && !e.ctrlKey && !e.altKey && !e.metaKey) {
 				var d = ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
 					file = d.file;
 
 				if (!file) {
 					self._notifcation('Please save the file first', true);
 					return;
+				}
+				
+				if ( !scimoz || ! scimoz.focus) {
+					return false;
 				}
 
 				if (file.ext == '.less') {
@@ -1162,6 +1163,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 						if (currentLineStart > 3) {
 							e.preventDefault();
 							e.stopPropagation();
+							if (scimoz.selText.length > 0) {
+								scimoz.replaceSel('');
+							}
 							self._autocomplete();
 						} else {
 							search = true;
@@ -1180,35 +1184,52 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	this._notifcation = function($message, error){
 		$message =$message || false;
 		error = error || false;
+		
 		var msgType = prefs.getCharPref('msgType');
 		
 		if (msgType === 'web-notifications') {
-			var icon = error ? 'chrome://less/content/less-error-icon.png' : 'chrome://less/content/less-icon.png';
-			if (!("Notification" in window)) {
-				alert("This browser does not support system notifications");
-			}
 			
-			else if (Notification.permission === "granted") {
-				var options = {
-				body: $message,
-				icon: icon
+			if (!notification) {
+				notification = true;
+				var icon = error ? 'chrome://less/content/less-error-icon.png' : 'chrome://less/content/less-icon.png';
+				if (!("Notification" in window)) {
+					alert("This browser does not support system notifications");
 				}
-				var n = new Notification('LESS Compiler', options);
-				setTimeout(n.close.bind(n), 5000); 
-			}
-			
-			else if (Notification.permission !== 'denied') {
-				Notification.requestPermission(function (permission) {
-				if (permission === "granted") {
+				
+				else if (Notification.permission === "granted") {
 					var options = {
-						 body: $message,
-						 icon: icon
-					 }
-					 var n = new Notification('LESS Compiler', options);
-					setTimeout(n.close.bind(n), 5000); 
+					body: $message,
+					icon: icon
+					}
+					var n = new Notification('LESS Compiler', options);
+					setTimeout(function(){
+						n.close.bind(n);
+						notification = false;
+					}, 5000); 
 				}
-				});
+				
+				else if (Notification.permission !== 'denied') {
+					Notification.requestPermission(function (permission) {
+					if (permission === "granted") {
+						var options = {
+							 body: $message,
+							 icon: icon
+						 }
+						 var n = new Notification('LESS Compiler', options);
+						setTimeout(function(){
+							n.close.bind(n);
+							notification = false;
+						}, 5000); 
+					}
+					});
+				}
+			} else {
+				setTimeout(function(){
+					self._notifcation($message, error);
+				}, 200);
 			}
+			
+			
 		} else {
 			notify.send(
 					$message,
@@ -1287,6 +1308,9 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	window.addEventListener("file_saved", self._AfterSafeAction, false);
 	window.addEventListener("current_view_changed", self._updateView, false);
 }).apply(extensions.less);
+
+
+
 
 
 
