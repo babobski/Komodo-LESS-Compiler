@@ -6,7 +6,7 @@ xtk.load('chrome://less/content/helper.js');
  */
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '3.0.0'
+	version: '3.0.1'
 };
 (function() {
 	var notify = require("notify/notify"),
@@ -608,7 +608,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	}
 
 	this._strip_comments = function(string) {
-		var patern = /\/\/@import\s+['"][^']+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";]+["'];/g;
+		var patern = /\/\/@import\s+['"][^\n']+['"];|\/\/@import\s+\W[^"]+\W\s+['"][^";\n]+["'];/g;
 		return string.toString().replace(patern, '');
 	}
 
@@ -1308,6 +1308,8 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	window.addEventListener("file_saved", self._AfterSafeAction, false);
 	window.addEventListener("current_view_changed", self._updateView, false);
 }).apply(extensions.less);
+
+
 
 
 
