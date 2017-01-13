@@ -613,7 +613,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	}
 
 	this._split_on_imports = function(cleanless) {
-		var patern = /(@import\s*['"][^"';]+['"];|@import\s+\W[^"]+\W\s+['"][^''";]+["'];)/g;
+		var patern = /(@import\s*['"][^"';]+['"];|@import\s+\W[^"\n]+\W\s+['"][^''";]+["'];)/g;
 		return cleanless.split(patern);
 	}
 
