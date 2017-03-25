@@ -772,14 +772,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 	}
 
 	this._cleanUp = function() {
-
-		if (prefs.getBoolPref('showWarning')) {
-			var features = "chrome,titlebar,toolbar,centerscreen";
-			window.openDialog('chrome://less/content/upgradeWarning.xul', "lessWarning", features);
-
-			prefs.setBoolPref('showWarning', false);
-		}
-
+		
 		if (prefs.getBoolPref('useFilewatcher') && !prefs.getBoolPref('useFileScopes')) {
 			self._notifcation('LESS: File watcher is still enabled form last session or is enabled in a other window.');
 		}
