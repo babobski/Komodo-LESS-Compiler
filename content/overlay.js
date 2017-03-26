@@ -6,7 +6,7 @@ xtk.load('chrome://less/content/helper.js');
  */
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '3.0.1'
+	version: '3.0.2'
 };
 (function() {
 	var notify = require("notify/notify"),
