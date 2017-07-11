@@ -17,7 +17,6 @@
 			name = document.getElementById('scopeName');
 		
 		if (scope !== false) {
-			console.log(scope);
 			name.value = scope.name;
 			newScope.project = scope.project;
 			newScope.outputfiles = scope.outputfiles;
@@ -38,6 +37,7 @@
 				return false;
 			}
 			
+			console.log(currentProject);
 			if (currentProject.importDirectoryLocalPath === null) {
 				projectDir = parse.displayPath(currentProject.importDirectoryURI);
 			} else {
@@ -73,9 +73,9 @@
 			}
 			
 			if (path !== undefined && !helper.InArray(path, newScope.outputfiles)) {
-				if (path.indexOf(projectDir) !== -1) {
-					path = path.substr(projectDir.length, path.length);
-					newScope.outputfiles.push(path);
+				if (path.indexOf(newScope.projectDir) !== -1) {
+					var newPath = path.substr(newScope.projectDir.length, path.length);
+					newScope.outputfiles.push(newPath);
 					
 					// build tree
 					var outputFileTree = document.getElementById('outputFiles');
@@ -120,8 +120,8 @@
 			}
 			
 			if (path !== undefined && !helper.InArray(path, newScope.includeFolders)) {
-				if (path.indexOf(projectDir) !== -1) {
-					path = path.substr(projectDir.length, path.length);
+				if (path.indexOf(newScope.projectDir) !== -1) {
+					path = path.substr(newScope.projectDir.length, path.length);
 					newScope.includeFolders.push(path);
 					
 					// build tree

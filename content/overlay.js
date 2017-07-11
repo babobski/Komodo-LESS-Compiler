@@ -6,7 +6,7 @@ xtk.load('chrome://less/content/helper.js');
  */
 if (typeof(extensions) === 'undefined') extensions = {};
 if (typeof(extensions.less) === 'undefined') extensions.less = {
-	version: '3.0.2'
+	version: '3.0.3'
 };
 (function() {
 	var notify = require("notify/notify"),
@@ -35,6 +35,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 		window.removeEventListener("komodo-post-startup", self._StartUpAction, false);
 		window.removeEventListener("view_opened", self.getVars, false);
+		window.removeEventListener("project_opened", self.getVars, false);
 		window.removeEventListener("focus", self._focusAction, false);
 		window.removeEventListener("file_saved", self._AfterSafeAction, false);
 		window.removeEventListener("current_view_changed", self._updateView, false);
@@ -385,8 +386,6 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 				
 		} else if (prefs.getBoolPref('useFilewatcher')) {
 			path = prefs.getCharPref('fileWatcher');
-			base = path.substr(self._last_slash(path) + 1, path.lenght),
-				 buffer = self._readFile(path, '')[0];
 		}
 
 		if (!path) {
@@ -1297,6 +1296,7 @@ if (typeof(extensions.less) === 'undefined') extensions.less = {
 
 	window.addEventListener("komodo-post-startup", self._StartUpAction, false);
 	window.addEventListener("view_opened", self.getVars, false);
+	window.addEventListener("project_opened", self.getVars, false);
 	window.addEventListener("focus", self._focusAction, false);
 	window.addEventListener("file_saved", self._AfterSafeAction, false);
 	window.addEventListener("current_view_changed", self._updateView, false);
